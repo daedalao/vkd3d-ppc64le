@@ -1,0 +1,457 @@
+D3D12 API-boundary layout coverage
+==================================
+
+structs/unions probed : 279
+enums probed          : 165
+member probes         : 1095
+bitfield probes       : 6
+
+--- records (member probes per record) ---
+
+D3D12_APPLICATION_DESC                                        members=5    struct vkd3d_d3d12.h
+D3D12_AUTO_BREADCRUMB_NODE                                    members=10   struct vkd3d_d3d12.h
+D3D12_AUTO_BREADCRUMB_NODE1                                   members=12   struct vkd3d_d3d12.h
+D3D12_BARRIER_GROUP                                           members=5    struct vkd3d_d3d12.h
+D3D12_BARRIER_SUBRESOURCE_RANGE                               members=6    struct vkd3d_d3d12.h
+D3D12_BLEND_DESC                                              members=3    struct vkd3d_d3d12.h
+D3D12_BOX                                                     members=6    struct vkd3d_d3d12.h
+D3D12_BROADCASTING_LAUNCH_OVERRIDES                           members=8    struct vkd3d_d3d12.h
+D3D12_BUFFER_BARRIER                                          members=7    struct vkd3d_d3d12.h
+D3D12_BUFFER_RTV                                              members=2    struct vkd3d_d3d12.h
+D3D12_BUFFER_SRV                                              members=4    struct vkd3d_d3d12.h
+D3D12_BUFFER_SRV_BYTE_OFFSET                                  members=4    struct vkd3d_d3d12.h
+D3D12_BUFFER_UAV                                              members=5    struct vkd3d_d3d12.h
+D3D12_BUFFER_UAV_BYTE_OFFSET                                  members=5    struct vkd3d_d3d12.h
+D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC            members=4    struct vkd3d_d3d12.h
+D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS          members=8    struct vkd3d_d3d12.h
+D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_TOOLS_VISUALIZATION_HEADER  members=2    struct vkd3d_d3d12.h
+D3D12_CACHED_PIPELINE_STATE                                   members=2    struct vkd3d_d3d12.h
+D3D12_CLEAR_VALUE                                             members=3    struct vkd3d_d3d12.h
+D3D12_COALESCING_LAUNCH_OVERRIDES                             members=6    struct vkd3d_d3d12.h
+D3D12_COMMAND_QUEUE_DESC                                      members=4    struct vkd3d_d3d12.h
+D3D12_COMMAND_SIGNATURE_DESC                                  members=4    struct vkd3d_d3d12.h
+D3D12_COMMON_COMPUTE_NODE_OVERRIDES                           members=6    struct vkd3d_d3d12.h
+D3D12_COMPUTE_PIPELINE_STATE_DESC                             members=5    struct vkd3d_d3d12.h
+D3D12_CONSTANT_BUFFER_VIEW_DESC                               members=2    struct vkd3d_d3d12.h
+D3D12_CPU_DESCRIPTOR_HANDLE                                   members=1    struct vkd3d_d3d12.h
+D3D12_DEPTH_STENCILOP_DESC                                    members=4    struct vkd3d_d3d12.h
+D3D12_DEPTH_STENCILOP_DESC1                                   members=6    struct vkd3d_d3d12.h
+D3D12_DEPTH_STENCIL_DESC                                      members=8    struct vkd3d_d3d12.h
+D3D12_DEPTH_STENCIL_DESC1                                     members=9    struct vkd3d_d3d12.h
+D3D12_DEPTH_STENCIL_DESC2                                     members=7    struct vkd3d_d3d12.h
+D3D12_DEPTH_STENCIL_VALUE                                     members=2    struct vkd3d_d3d12.h
+D3D12_DEPTH_STENCIL_VIEW_DESC                                 members=9    struct vkd3d_d3d12.h
+D3D12_DESCRIPTOR_HEAP_DESC                                    members=4    struct vkd3d_d3d12.h
+D3D12_DESCRIPTOR_RANGE                                        members=5    struct vkd3d_d3d12.h
+D3D12_DESCRIPTOR_RANGE1                                       members=6    struct vkd3d_d3d12.h
+D3D12_DEVICE_CONFIGURATION_DESC                               members=4    struct vkd3d_d3d12.h
+D3D12_DEVICE_REMOVED_EXTENDED_DATA                            members=2    struct vkd3d_d3d12.h
+D3D12_DEVICE_REMOVED_EXTENDED_DATA1                           members=3    struct vkd3d_d3d12.h
+D3D12_DEVICE_REMOVED_EXTENDED_DATA2                           members=3    struct vkd3d_d3d12.h
+D3D12_DEVICE_REMOVED_EXTENDED_DATA3                           members=4    struct vkd3d_d3d12.h
+D3D12_DISCARD_REGION                                          members=4    struct vkd3d_d3d12.h
+D3D12_DISPATCH_ARGUMENTS                                      members=3    struct vkd3d_d3d12.h
+D3D12_DISPATCH_GRAPH_DESC                                     members=5    struct vkd3d_d3d12.h
+D3D12_DISPATCH_MESH_ARGUMENTS                                 members=3    struct vkd3d_d3d12.h
+D3D12_DISPATCH_RAYS_DESC                                      members=7    struct vkd3d_d3d12.h
+D3D12_DRAW_ARGUMENTS                                          members=4    struct vkd3d_d3d12.h
+D3D12_DRAW_INDEXED_ARGUMENTS                                  members=5    struct vkd3d_d3d12.h
+D3D12_DRED_ALLOCATION_NODE                                    members=4    struct vkd3d_d3d12.h
+D3D12_DRED_ALLOCATION_NODE1                                   members=5    struct vkd3d_d3d12.h
+D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT                            members=1    struct vkd3d_d3d12.h
+D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT1                           members=1    struct vkd3d_d3d12.h
+D3D12_DRED_BREADCRUMB_CONTEXT                                 members=2    struct vkd3d_d3d12.h
+D3D12_DRED_PAGE_FAULT_OUTPUT                                  members=3    struct vkd3d_d3d12.h
+D3D12_DRED_PAGE_FAULT_OUTPUT1                                 members=3    struct vkd3d_d3d12.h
+D3D12_DRED_PAGE_FAULT_OUTPUT2                                 members=4    struct vkd3d_d3d12.h
+D3D12_DXIL_LIBRARY_DESC                                       members=3    struct vkd3d_d3d12.h
+D3D12_DXIL_SUBOBJECT_TO_EXPORTS_ASSOCIATION                   members=3    struct vkd3d_d3d12.h
+D3D12_EXISTING_COLLECTION_DESC                                members=3    struct vkd3d_d3d12.h
+D3D12_EXPORT_DESC                                             members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_APPLICATION_SPECIFIC_DRIVER_STATE          members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_ARCHITECTURE                               members=4    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_ARCHITECTURE1                              members=5    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_BARRIER_LAYOUT                             members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_BYTECODE_BYPASS_HASH_SUPPORTED             members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_COMMAND_QUEUE_PRIORITY                     members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_CROSS_NODE                                 members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS                              members=15   struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS1                             members=6    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS10                            members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS11                            members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS12                            members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS13                            members=6    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS14                            members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS15                            members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS16                            members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS17                            members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS18                            members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS19                            members=10   struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS2                             members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS20                            members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS21                            members=4    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS22                            members=4    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS3                             members=5    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS4                             members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS5                             members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS6                             members=5    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS7                             members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS8                             members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_D3D12_OPTIONS9                             members=6    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_EXISTING_HEAPS                             members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_FEATURE_LEVELS                             members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_FORMAT_INFO                                members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_FORMAT_SUPPORT                             members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_GPU_VIRTUAL_ADDRESS_SUPPORT                members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_HARDWARE_COPY                              members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS                 members=4    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_PLACED_RESOURCE_SUPPORT_INFO               members=4    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_PREDICATION                                members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_SUPPORT         members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPES           members=3    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_PROTECTED_RESOURCE_SESSION_TYPE_COUNT      members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_QUERY_META_COMMAND                         members=6    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_ROOT_SIGNATURE                             members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_SERIALIZATION                              members=2    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_SHADERCACHE_ABI_SUPPORT                    members=5    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_SHADER_CACHE                               members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_SHADER_MODEL                               members=1    struct vkd3d_d3d12.h
+D3D12_FEATURE_DATA_TIGHT_ALIGNMENT                            members=1    struct vkd3d_d3d12.h
+D3D12_GENERIC_PROGRAM_DESC                                    members=5    struct vkd3d_d3d12.h
+D3D12_GLOBAL_BARRIER                                          members=4    struct vkd3d_d3d12.h
+D3D12_GLOBAL_ROOT_SIGNATURE                                   members=1    struct vkd3d_d3d12.h
+D3D12_GPU_DESCRIPTOR_HANDLE                                   members=1    struct vkd3d_d3d12.h
+D3D12_GPU_VIRTUAL_ADDRESS_AND_STRIDE                          members=2    struct vkd3d_d3d12.h
+D3D12_GPU_VIRTUAL_ADDRESS_RANGE                               members=2    struct vkd3d_d3d12.h
+D3D12_GPU_VIRTUAL_ADDRESS_RANGE_AND_STRIDE                    members=3    struct vkd3d_d3d12.h
+D3D12_GRAPHICS_PIPELINE_STATE_DESC                            members=21   struct vkd3d_d3d12.h
+D3D12_HEAP_DESC                                               members=4    struct vkd3d_d3d12.h
+D3D12_HEAP_PROPERTIES                                         members=5    struct vkd3d_d3d12.h
+D3D12_HIT_GROUP_DESC                                          members=5    struct vkd3d_d3d12.h
+D3D12_INDEX_BUFFER_VIEW                                       members=3    struct vkd3d_d3d12.h
+D3D12_INDIRECT_ARGUMENT_DESC                                  members=16   struct vkd3d_d3d12.h
+D3D12_INPUT_ELEMENT_DESC                                      members=7    struct vkd3d_d3d12.h
+D3D12_INPUT_LAYOUT_DESC                                       members=2    struct vkd3d_d3d12.h
+D3D12_LOCAL_ROOT_SIGNATURE                                    members=1    struct vkd3d_d3d12.h
+D3D12_MEMCPY_DEST                                             members=3    struct vkd3d_d3d12.h
+D3D12_META_COMMAND_DESC                                       members=4    struct vkd3d_d3d12.h
+D3D12_META_COMMAND_PARAMETER_DESC                             members=5    struct vkd3d_d3d12.h
+D3D12_MIP_REGION                                              members=3    struct vkd3d_d3d12.h
+D3D12_MULTI_NODE_CPU_INPUT                                    members=3    struct vkd3d_d3d12.h
+D3D12_MULTI_NODE_GPU_INPUT                                    members=2    struct vkd3d_d3d12.h
+D3D12_NODE                                                    members=2    struct vkd3d_d3d12.h
+D3D12_NODE_CPU_INPUT                                          members=4    struct vkd3d_d3d12.h
+D3D12_NODE_GPU_INPUT                                          members=3    struct vkd3d_d3d12.h
+D3D12_NODE_ID                                                 members=2    struct vkd3d_d3d12.h
+D3D12_NODE_MASK                                               members=1    struct vkd3d_d3d12.h
+D3D12_NODE_OUTPUT_OVERRIDES                                   members=5    struct vkd3d_d3d12.h
+D3D12_PACKED_MIP_INFO                                         members=4    struct vkd3d_d3d12.h
+D3D12_PIPELINE_STATE_STREAM_DESC                              members=2    struct vkd3d_d3d12.h
+D3D12_PLACED_SUBRESOURCE_FOOTPRINT                            members=2    struct vkd3d_d3d12.h
+D3D12_PROGRAM_IDENTIFIER                                      members=1    struct vkd3d_d3d12.h
+D3D12_PROTECTED_RESOURCE_SESSION_DESC                         members=2    struct vkd3d_d3d12.h
+D3D12_PROTECTED_RESOURCE_SESSION_DESC1                        members=3    struct vkd3d_d3d12.h
+D3D12_QUERY_DATA_PIPELINE_STATISTICS                          members=11   struct vkd3d_d3d12.h
+D3D12_QUERY_DATA_SO_STATISTICS                                members=2    struct vkd3d_d3d12.h
+D3D12_QUERY_HEAP_DESC                                         members=3    struct vkd3d_d3d12.h
+D3D12_RANGE                                                   members=2    struct vkd3d_d3d12.h
+D3D12_RANGE_UINT64                                            members=2    struct vkd3d_d3d12.h
+D3D12_RASTERIZER_DESC                                         members=11   struct vkd3d_d3d12.h
+D3D12_RASTERIZER_DESC1                                        members=11   struct vkd3d_d3d12.h
+D3D12_RASTERIZER_DESC2                                        members=10   struct vkd3d_d3d12.h
+D3D12_RAYTRACING_AABB                                         members=6    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_COMPACTED_SIZE_DESC  members=1    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_CURRENT_SIZE_DESC  members=1    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_DESC   members=2    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_SERIALIZATION_DESC  members=2    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TOOLS_VISUALIZATION_DESC  members=1    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO         members=3    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_SRV                   members=1    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_GEOMETRY_AABBS_DESC                          members=2    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_GEOMETRY_DESC                                members=5    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_GEOMETRY_OMM_LINKAGE_DESC                    members=4    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_GEOMETRY_OMM_TRIANGLES_DESC                  members=2    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_GEOMETRY_TRIANGLES_DESC                      members=7    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_INSTANCE_DESC                                members=6    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_OPACITY_MICROMAP_ARRAY_DESC                  members=4    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_OPACITY_MICROMAP_DESC                        members=3    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_OPACITY_MICROMAP_HISTOGRAM_ENTRY             members=3    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_PIPELINE_CONFIG                              members=1    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_PIPELINE_CONFIG1                             members=2    struct vkd3d_d3d12.h
+D3D12_RAYTRACING_SHADER_CONFIG                                members=2    struct vkd3d_d3d12.h
+D3D12_REGISTER_TRIM_NOTIFICATION                              members=3    struct vkd3d_d3d12.h
+D3D12_RENDER_PASS_BEGINNING_ACCESS                            members=2    struct vkd3d_d3d12.h
+D3D12_RENDER_PASS_BEGINNING_ACCESS_CLEAR_PARAMETERS           members=1    struct vkd3d_d3d12.h
+D3D12_RENDER_PASS_DEPTH_STENCIL_DESC                          members=5    struct vkd3d_d3d12.h
+D3D12_RENDER_PASS_ENDING_ACCESS                               members=2    struct vkd3d_d3d12.h
+D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_PARAMETERS            members=7    struct vkd3d_d3d12.h
+D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS  members=5    struct vkd3d_d3d12.h
+D3D12_RENDER_PASS_RENDER_TARGET_DESC                          members=3    struct vkd3d_d3d12.h
+D3D12_RENDER_TARGET_BLEND_DESC                                members=10   struct vkd3d_d3d12.h
+D3D12_RENDER_TARGET_VIEW_DESC                                 members=10   struct vkd3d_d3d12.h
+D3D12_RESOURCE_ALIASING_BARRIER                               members=2    struct vkd3d_d3d12.h
+D3D12_RESOURCE_ALLOCATION_INFO                                members=2    struct vkd3d_d3d12.h
+D3D12_RESOURCE_ALLOCATION_INFO1                               members=3    struct vkd3d_d3d12.h
+D3D12_RESOURCE_BARRIER                                        members=5    struct vkd3d_d3d12.h
+D3D12_RESOURCE_DESC                                           members=10   struct vkd3d_d3d12.h
+D3D12_RESOURCE_DESC1                                          members=11   struct vkd3d_d3d12.h
+D3D12_RESOURCE_TRANSITION_BARRIER                             members=4    struct vkd3d_d3d12.h
+D3D12_RESOURCE_UAV_BARRIER                                    members=1    struct vkd3d_d3d12.h
+D3D12_ROOT_CONSTANTS                                          members=3    struct vkd3d_d3d12.h
+D3D12_ROOT_DESCRIPTOR                                         members=2    struct vkd3d_d3d12.h
+D3D12_ROOT_DESCRIPTOR1                                        members=3    struct vkd3d_d3d12.h
+D3D12_ROOT_DESCRIPTOR_TABLE                                   members=2    struct vkd3d_d3d12.h
+D3D12_ROOT_DESCRIPTOR_TABLE1                                  members=2    struct vkd3d_d3d12.h
+D3D12_ROOT_PARAMETER                                          members=5    struct vkd3d_d3d12.h
+D3D12_ROOT_PARAMETER1                                         members=5    struct vkd3d_d3d12.h
+D3D12_ROOT_SIGNATURE_DESC                                     members=5    struct vkd3d_d3d12.h
+D3D12_ROOT_SIGNATURE_DESC1                                    members=5    struct vkd3d_d3d12.h
+D3D12_ROOT_SIGNATURE_DESC2                                    members=5    struct vkd3d_d3d12.h
+D3D12_RT_FORMAT_ARRAY                                         members=2    struct vkd3d_d3d12.h
+D3D12_SAMPLER_DESC                                            members=10   struct vkd3d_d3d12.h
+D3D12_SAMPLER_DESC2                                           members=12   struct vkd3d_d3d12.h
+D3D12_SAMPLE_POSITION                                         members=2    struct vkd3d_d3d12.h
+D3D12_SERIALIZED_DATA_DRIVER_MATCHING_IDENTIFIER              members=2    struct vkd3d_d3d12.h
+D3D12_SERIALIZED_RAYTRACING_ACCELERATION_STRUCTURE_HEADER     members=4    struct vkd3d_d3d12.h
+D3D12_SET_GENERIC_PIPELINE_DESC                               members=1    struct vkd3d_d3d12.h
+D3D12_SET_PROGRAM_DESC                                        members=4    struct vkd3d_d3d12.h
+D3D12_SET_RAYTRACING_PIPELINE_DESC                            members=1    struct vkd3d_d3d12.h
+D3D12_SET_WORK_GRAPH_DESC                                     members=4    struct vkd3d_d3d12.h
+D3D12_SHADER_BYTECODE                                         members=2    struct vkd3d_d3d12.h
+D3D12_SHADER_CACHE_SESSION_DESC                               members=7    struct vkd3d_d3d12.h
+D3D12_SHADER_NODE                                             members=6    struct vkd3d_d3d12.h
+D3D12_SHADER_RESOURCE_VIEW_DESC                               members=15   struct vkd3d_d3d12.h
+D3D12_SO_DECLARATION_ENTRY                                    members=6    struct vkd3d_d3d12.h
+D3D12_STATE_OBJECT_CONFIG                                     members=1    struct vkd3d_d3d12.h
+D3D12_STATE_OBJECT_DESC                                       members=3    struct vkd3d_d3d12.h
+D3D12_STATE_SUBOBJECT                                         members=2    struct vkd3d_d3d12.h
+D3D12_STATIC_SAMPLER_DESC                                     members=13   struct vkd3d_d3d12.h
+D3D12_STATIC_SAMPLER_DESC1                                    members=14   struct vkd3d_d3d12.h
+D3D12_STREAM_OUTPUT_BUFFER_VIEW                               members=3    struct vkd3d_d3d12.h
+D3D12_STREAM_OUTPUT_DESC                                      members=5    struct vkd3d_d3d12.h
+D3D12_SUBOBJECT_TO_EXPORTS_ASSOCIATION                        members=3    struct vkd3d_d3d12.h
+D3D12_SUBRESOURCE_DATA                                        members=3    struct vkd3d_d3d12.h
+D3D12_SUBRESOURCE_FOOTPRINT                                   members=5    struct vkd3d_d3d12.h
+D3D12_SUBRESOURCE_INFO                                        members=3    struct vkd3d_d3d12.h
+D3D12_SUBRESOURCE_RANGE_UINT64                                members=2    struct vkd3d_d3d12.h
+D3D12_SUBRESOURCE_TILING                                      members=4    struct vkd3d_d3d12.h
+D3D12_TEX1D_ARRAY_DSV                                         members=3    struct vkd3d_d3d12.h
+D3D12_TEX1D_ARRAY_RTV                                         members=3    struct vkd3d_d3d12.h
+D3D12_TEX1D_ARRAY_SRV                                         members=5    struct vkd3d_d3d12.h
+D3D12_TEX1D_ARRAY_UAV                                         members=3    struct vkd3d_d3d12.h
+D3D12_TEX1D_DSV                                               members=1    struct vkd3d_d3d12.h
+D3D12_TEX1D_RTV                                               members=1    struct vkd3d_d3d12.h
+D3D12_TEX1D_SRV                                               members=3    struct vkd3d_d3d12.h
+D3D12_TEX1D_UAV                                               members=1    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_ARRAY_DSV                                       members=2    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_ARRAY_RTV                                       members=2    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_ARRAY_SRV                                       members=2    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_ARRAY_UAV                                       members=2    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_DSV                                             members=1    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_RTV                                             members=1    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_SRV                                             members=1    struct vkd3d_d3d12.h
+D3D12_TEX2DMS_UAV                                             members=1    struct vkd3d_d3d12.h
+D3D12_TEX2D_ARRAY_DSV                                         members=3    struct vkd3d_d3d12.h
+D3D12_TEX2D_ARRAY_RTV                                         members=4    struct vkd3d_d3d12.h
+D3D12_TEX2D_ARRAY_SRV                                         members=6    struct vkd3d_d3d12.h
+D3D12_TEX2D_ARRAY_UAV                                         members=4    struct vkd3d_d3d12.h
+D3D12_TEX2D_DSV                                               members=1    struct vkd3d_d3d12.h
+D3D12_TEX2D_RTV                                               members=2    struct vkd3d_d3d12.h
+D3D12_TEX2D_SRV                                               members=4    struct vkd3d_d3d12.h
+D3D12_TEX2D_UAV                                               members=2    struct vkd3d_d3d12.h
+D3D12_TEX3D_RTV                                               members=3    struct vkd3d_d3d12.h
+D3D12_TEX3D_SRV                                               members=3    struct vkd3d_d3d12.h
+D3D12_TEX3D_UAV                                               members=3    struct vkd3d_d3d12.h
+D3D12_TEXCUBE_ARRAY_SRV                                       members=5    struct vkd3d_d3d12.h
+D3D12_TEXCUBE_SRV                                             members=3    struct vkd3d_d3d12.h
+D3D12_TEXTURE_BARRIER                                         members=9    struct vkd3d_d3d12.h
+D3D12_TEXTURE_COPY_LOCATION                                   members=4    struct vkd3d_d3d12.h
+D3D12_THREAD_LAUNCH_OVERRIDES                                 members=6    struct vkd3d_d3d12.h
+D3D12_TILED_RESOURCE_COORDINATE                               members=4    struct vkd3d_d3d12.h
+D3D12_TILE_REGION_SIZE                                        members=5    struct vkd3d_d3d12.h
+D3D12_TILE_SHAPE                                              members=3    struct vkd3d_d3d12.h
+D3D12_TRIM_NOTIFICATION                                       members=3    struct vkd3d_d3d12.h
+D3D12_UNORDERED_ACCESS_VIEW_DESC                              members=11   struct vkd3d_d3d12.h
+D3D12_VERSIONED_DEVICE_REMOVED_EXTENDED_DATA                  members=5    struct vkd3d_d3d12.h
+D3D12_VERSIONED_ROOT_SIGNATURE_DESC                           members=4    struct vkd3d_d3d12.h
+D3D12_VERSION_NUMBER                                          members=2    union  vkd3d_d3d12.h
+D3D12_VERTEX_BUFFER_VIEW                                      members=3    struct vkd3d_d3d12.h
+D3D12_VIEWPORT                                                members=6    struct vkd3d_d3d12.h
+D3D12_VIEW_INSTANCE_LOCATION                                  members=2    struct vkd3d_d3d12.h
+D3D12_VIEW_INSTANCING_DESC                                    members=3    struct vkd3d_d3d12.h
+D3D12_WORK_GRAPH_DESC                                         members=6    struct vkd3d_d3d12.h
+D3D12_WORK_GRAPH_MEMORY_REQUIREMENTS                          members=3    struct vkd3d_d3d12.h
+D3D12_WRITEBUFFERIMMEDIATE_PARAMETER                          members=2    struct vkd3d_d3d12.h
+DXGI_RGB                                                      members=3    struct vkd3d_dxgibase.h
+DXGI_SAMPLE_DESC                                              members=2    struct vkd3d_dxgibase.h
+GUID                                                          members=4    struct vkd3d_windows.h
+LUID                                                          members=2    struct vkd3d_d3dcommon.h
+RECT                                                          members=4    struct vkd3d_d3dcommon.h
+
+--- enums ---
+
+D3D12_AUTO_BREADCRUMB_OP                                      vkd3d_d3d12.h
+D3D12_AXIS_SHADING_RATE                                       vkd3d_d3d12.h
+D3D12_BACKGROUND_PROCESSING_MODE                              vkd3d_d3d12.h
+D3D12_BARRIER_ACCESS                                          vkd3d_d3d12.h
+D3D12_BARRIER_LAYOUT                                          vkd3d_d3d12.h
+D3D12_BARRIER_SYNC                                            vkd3d_d3d12.h
+D3D12_BARRIER_TYPE                                            vkd3d_d3d12.h
+D3D12_BLEND                                                   vkd3d_d3d12.h
+D3D12_BLEND_OP                                                vkd3d_d3d12.h
+D3D12_BUFFER_SRV_FLAGS                                        vkd3d_d3d12.h
+D3D12_BUFFER_UAV_FLAGS                                        vkd3d_d3d12.h
+D3D12_CLEAR_FLAGS                                             vkd3d_d3d12.h
+D3D12_COLOR_WRITE_ENABLE                                      vkd3d_d3d12.h
+D3D12_COMMAND_LIST_FLAGS                                      vkd3d_d3d12.h
+D3D12_COMMAND_LIST_SUPPORT_FLAGS                              vkd3d_d3d12.h
+D3D12_COMMAND_LIST_TYPE                                       vkd3d_d3d12.h
+D3D12_COMMAND_POOL_FLAGS                                      vkd3d_d3d12.h
+D3D12_COMMAND_QUEUE_FLAGS                                     vkd3d_d3d12.h
+D3D12_COMMAND_QUEUE_PRIORITY                                  vkd3d_d3d12.h
+D3D12_COMMAND_RECORDER_FLAGS                                  vkd3d_d3d12.h
+D3D12_COMPARISON_FUNC                                         vkd3d_d3d12.h
+D3D12_CONSERVATIVE_RASTERIZATION_MODE                         vkd3d_d3d12.h
+D3D12_CONSERVATIVE_RASTERIZATION_TIER                         vkd3d_d3d12.h
+D3D12_CPU_PAGE_PROPERTY                                       vkd3d_d3d12.h
+D3D12_CROSS_NODE_SHARING_TIER                                 vkd3d_d3d12.h
+D3D12_CULL_MODE                                               vkd3d_d3d12.h
+D3D12_DEPTH_WRITE_MASK                                        vkd3d_d3d12.h
+D3D12_DESCRIPTOR_HEAP_FLAGS                                   vkd3d_d3d12.h
+D3D12_DESCRIPTOR_HEAP_TYPE                                    vkd3d_d3d12.h
+D3D12_DESCRIPTOR_RANGE_FLAGS                                  vkd3d_d3d12.h
+D3D12_DESCRIPTOR_RANGE_TYPE                                   vkd3d_d3d12.h
+D3D12_DEVICE_FACTORY_FLAGS                                    vkd3d_d3d12.h
+D3D12_DEVICE_FLAGS                                            vkd3d_d3d12.h
+D3D12_DISPATCH_MODE                                           vkd3d_d3d12.h
+D3D12_DRED_ALLOCATION_TYPE                                    vkd3d_d3d12.h
+D3D12_DRED_DEVICE_STATE                                       vkd3d_d3d12.h
+D3D12_DRED_ENABLEMENT                                         vkd3d_d3d12.h
+D3D12_DRED_FLAGS                                              vkd3d_d3d12.h
+D3D12_DRED_PAGE_FAULT_FLAGS                                   vkd3d_d3d12.h
+D3D12_DRED_VERSION                                            vkd3d_d3d12.h
+D3D12_DRIVER_MATCHING_IDENTIFIER_STATUS                       vkd3d_d3d12.h
+D3D12_DSV_DIMENSION                                           vkd3d_d3d12.h
+D3D12_DSV_FLAGS                                               vkd3d_d3d12.h
+D3D12_ELEMENTS_LAYOUT                                         vkd3d_d3d12.h
+D3D12_EXECUTE_INDIRECT_TIER                                   vkd3d_d3d12.h
+D3D12_EXPORT_FLAGS                                            vkd3d_d3d12.h
+D3D12_FEATURE                                                 vkd3d_d3d12.h
+D3D12_FENCE_FLAGS                                             vkd3d_d3d12.h
+D3D12_FILL_MODE                                               vkd3d_d3d12.h
+D3D12_FILTER                                                  vkd3d_d3d12.h
+D3D12_FILTER_REDUCTION_TYPE                                   vkd3d_d3d12.h
+D3D12_FILTER_TYPE                                             vkd3d_d3d12.h
+D3D12_FORMAT_SUPPORT1                                         vkd3d_d3d12.h
+D3D12_FORMAT_SUPPORT2                                         vkd3d_d3d12.h
+D3D12_GRAPHICS_STATES                                         vkd3d_d3d12.h
+D3D12_HEAP_FLAGS                                              vkd3d_d3d12.h
+D3D12_HEAP_SERIALIZATION_TIER                                 vkd3d_d3d12.h
+D3D12_HEAP_TYPE                                               vkd3d_d3d12.h
+D3D12_HIT_GROUP_TYPE                                          vkd3d_d3d12.h
+D3D12_HIT_KIND                                                vkd3d_d3d12.h
+D3D12_INDEX_BUFFER_STRIP_CUT_VALUE                            vkd3d_d3d12.h
+D3D12_INDIRECT_ARGUMENT_TYPE                                  vkd3d_d3d12.h
+D3D12_INPUT_CLASSIFICATION                                    vkd3d_d3d12.h
+D3D12_LIFETIME_STATE                                          vkd3d_d3d12.h
+D3D12_LINE_RASTERIZATION_MODE                                 vkd3d_d3d12.h
+D3D12_LOGIC_OP                                                vkd3d_d3d12.h
+D3D12_MEASUREMENTS_ACTION                                     vkd3d_d3d12.h
+D3D12_MEMORY_POOL                                             vkd3d_d3d12.h
+D3D12_MESH_SHADER_TIER                                        vkd3d_d3d12.h
+D3D12_META_COMMAND_PARAMETER_FLAGS                            vkd3d_d3d12.h
+D3D12_META_COMMAND_PARAMETER_STAGE                            vkd3d_d3d12.h
+D3D12_META_COMMAND_PARAMETER_TYPE                             vkd3d_d3d12.h
+D3D12_MULTIPLE_FENCE_WAIT_FLAGS                               vkd3d_d3d12.h
+D3D12_MULTISAMPLE_QUALITY_LEVEL_FLAGS                         vkd3d_d3d12.h
+D3D12_NODE_OVERRIDES_TYPE                                     vkd3d_d3d12.h
+D3D12_NODE_TYPE                                               vkd3d_d3d12.h
+D3D12_PIPELINE_STATE_FLAGS                                    vkd3d_d3d12.h
+D3D12_PIPELINE_STATE_SUBOBJECT_TYPE                           vkd3d_d3d12.h
+D3D12_PREDICATION_OP                                          vkd3d_d3d12.h
+D3D12_PRIMITIVE_TOPOLOGY_TYPE                                 vkd3d_d3d12.h
+D3D12_PROGRAMMABLE_SAMPLE_POSITIONS_TIER                      vkd3d_d3d12.h
+D3D12_PROGRAM_TYPE                                            vkd3d_d3d12.h
+D3D12_PROTECTED_RESOURCE_SESSION_FLAGS                        vkd3d_d3d12.h
+D3D12_PROTECTED_RESOURCE_SESSION_SUPPORT_FLAGS                vkd3d_d3d12.h
+D3D12_PROTECTED_SESSION_STATUS                                vkd3d_d3d12.h
+D3D12_QUERY_HEAP_FLAGS                                        vkd3d_d3d12.h
+D3D12_QUERY_HEAP_TYPE                                         vkd3d_d3d12.h
+D3D12_QUERY_TYPE                                              vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAGS           vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_COPY_MODE             vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_POSTBUILD_INFO_TYPE   vkd3d_d3d12.h
+D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE                  vkd3d_d3d12.h
+D3D12_RAYTRACING_GEOMETRY_FLAGS                               vkd3d_d3d12.h
+D3D12_RAYTRACING_GEOMETRY_TYPE                                vkd3d_d3d12.h
+D3D12_RAYTRACING_INSTANCE_FLAGS                               vkd3d_d3d12.h
+D3D12_RAYTRACING_OPACITY_MICROMAP_FORMAT                      vkd3d_d3d12.h
+D3D12_RAYTRACING_OPACITY_MICROMAP_SPECIAL_INDEX               vkd3d_d3d12.h
+D3D12_RAYTRACING_OPACITY_MICROMAP_STATE                       vkd3d_d3d12.h
+D3D12_RAYTRACING_PIPELINE_FLAGS                               vkd3d_d3d12.h
+D3D12_RAYTRACING_TIER                                         vkd3d_d3d12.h
+D3D12_RAY_FLAGS                                               vkd3d_d3d12.h
+D3D12_RECREATE_AT_TIER                                        vkd3d_d3d12.h
+D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE                       vkd3d_d3d12.h
+D3D12_RENDER_PASS_ENDING_ACCESS_TYPE                          vkd3d_d3d12.h
+D3D12_RENDER_PASS_FLAGS                                       vkd3d_d3d12.h
+D3D12_RENDER_PASS_TIER                                        vkd3d_d3d12.h
+D3D12_RESIDENCY_FLAGS                                         vkd3d_d3d12.h
+D3D12_RESIDENCY_PRIORITY                                      vkd3d_d3d12.h
+D3D12_RESOLVE_MODE                                            vkd3d_d3d12.h
+D3D12_RESOURCE_BARRIER_FLAGS                                  vkd3d_d3d12.h
+D3D12_RESOURCE_BARRIER_TYPE                                   vkd3d_d3d12.h
+D3D12_RESOURCE_BINDING_TIER                                   vkd3d_d3d12.h
+D3D12_RESOURCE_DIMENSION                                      vkd3d_d3d12.h
+D3D12_RESOURCE_FLAGS                                          vkd3d_d3d12.h
+D3D12_RESOURCE_HEAP_TIER                                      vkd3d_d3d12.h
+D3D12_RESOURCE_STATES                                         vkd3d_d3d12.h
+D3D12_ROOT_DESCRIPTOR_FLAGS                                   vkd3d_d3d12.h
+D3D12_ROOT_PARAMETER_TYPE                                     vkd3d_d3d12.h
+D3D12_ROOT_SIGNATURE_FLAGS                                    vkd3d_d3d12.h
+D3D12_RTV_DIMENSION                                           vkd3d_d3d12.h
+D3D12_SAMPLER_FEEDBACK_TIER                                   vkd3d_d3d12.h
+D3D12_SAMPLER_FLAGS                                           vkd3d_d3d12.h
+D3D12_SERIALIZED_DATA_TYPE                                    vkd3d_d3d12.h
+D3D12_SET_WORK_GRAPH_FLAGS                                    vkd3d_d3d12.h
+D3D12_SHADER_CACHE_CONTROL_FLAGS                              vkd3d_d3d12.h
+D3D12_SHADER_CACHE_FLAGS                                      vkd3d_d3d12.h
+D3D12_SHADER_CACHE_KIND_FLAGS                                 vkd3d_d3d12.h
+D3D12_SHADER_CACHE_MODE                                       vkd3d_d3d12.h
+D3D12_SHADER_CACHE_SUPPORT_FLAGS                              vkd3d_d3d12.h
+D3D12_SHADER_COMPONENT_MAPPING                                vkd3d_d3d12.h
+D3D12_SHADER_MIN_PRECISION_SUPPORT                            vkd3d_d3d12.h
+D3D12_SHADER_VISIBILITY                                       vkd3d_d3d12.h
+D3D12_SHADING_RATE                                            vkd3d_d3d12.h
+D3D12_SHADING_RATE_COMBINER                                   vkd3d_d3d12.h
+D3D12_SHARED_RESOURCE_COMPATIBILITY_TIER                      vkd3d_d3d12.h
+D3D12_SRV_DIMENSION                                           vkd3d_d3d12.h
+D3D12_STATE_OBJECT_FLAGS                                      vkd3d_d3d12.h
+D3D12_STATE_OBJECT_TYPE                                       vkd3d_d3d12.h
+D3D12_STATE_SUBOBJECT_TYPE                                    vkd3d_d3d12.h
+D3D12_STATIC_BORDER_COLOR                                     vkd3d_d3d12.h
+D3D12_STENCIL_OP                                              vkd3d_d3d12.h
+D3D12_TEXTURE_ADDRESS_MODE                                    vkd3d_d3d12.h
+D3D12_TEXTURE_BARRIER_FLAGS                                   vkd3d_d3d12.h
+D3D12_TEXTURE_COPY_TYPE                                       vkd3d_d3d12.h
+D3D12_TEXTURE_LAYOUT                                          vkd3d_d3d12.h
+D3D12_TIGHT_ALIGNMENT_TIER                                    vkd3d_d3d12.h
+D3D12_TILED_RESOURCES_TIER                                    vkd3d_d3d12.h
+D3D12_TILE_COPY_FLAGS                                         vkd3d_d3d12.h
+D3D12_TILE_MAPPING_FLAGS                                      vkd3d_d3d12.h
+D3D12_TILE_RANGE_FLAGS                                        vkd3d_d3d12.h
+D3D12_TRIM_NOTIFICATION_FLAGS                                 vkd3d_d3d12.h
+D3D12_TRI_STATE                                               vkd3d_d3d12.h
+D3D12_UAV_DIMENSION                                           vkd3d_d3d12.h
+D3D12_VARIABLE_SHADING_RATE_TIER                              vkd3d_d3d12.h
+D3D12_VIEW_INSTANCING_FLAGS                                   vkd3d_d3d12.h
+D3D12_VIEW_INSTANCING_TIER                                    vkd3d_d3d12.h
+D3D12_WAVE_MMA_TIER                                           vkd3d_d3d12.h
+D3D12_WORK_GRAPHS_TIER                                        vkd3d_d3d12.h
+D3D12_WORK_GRAPH_FLAGS                                        vkd3d_d3d12.h
+D3D12_WRITEBUFFERIMMEDIATE_MODE                               vkd3d_d3d12.h
+D3D_FEATURE_LEVEL                                             vkd3d_d3dcommon.h
+D3D_PRIMITIVE_TOPOLOGY                                        vkd3d_d3dcommon.h
+D3D_ROOT_SIGNATURE_VERSION                                    vkd3d_d3d12.h
+D3D_SHADER_MODEL                                              vkd3d_d3d12.h
+DXGI_FORMAT                                                   vkd3d_dxgiformat.h
