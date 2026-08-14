@@ -1,0 +1,15 @@
+; Import library input for tests/pe_attach.c ONLY. The shim itself imports
+; nothing but ntdll (pe/ntdll.def); a test .exe, on the other hand, wants the
+; ordinary Win32 loader and console calls, and using them is the point -- the
+; test must reach d3d12.dll the way a game does.
+;
+;   llvm-dlltool -m i386:x86-64 -d pe/kernel32.def -l build/libkernel32.a
+LIBRARY kernel32.dll
+EXPORTS
+    LoadLibraryA
+    FreeLibrary
+    GetProcAddress
+    GetLastError
+    GetStdHandle
+    WriteFile
+    ExitProcess

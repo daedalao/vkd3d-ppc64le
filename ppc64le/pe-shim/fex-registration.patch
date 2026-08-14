@@ -1,0 +1,108 @@
+Register libvkd3d_d3d12 as a FEX thunked library.
+
+NOT APPLIED. The FEX checkout is read-only to this work; this is the in-tree
+equivalent of pe-shim/build.sh, provided so the owner can apply it
+deliberately. build.sh remains the out-of-tree equivalent and needs none of
+this.
+
+Before applying, symlink the sources in (add_guest_lib/add_host_lib look for
+ThunkLibs/lib<NAME>/lib<NAME>_{Guest,Host}.cpp, and this directory is named to
+provide exactly that):
+
+    cd <fex>/ThunkLibs
+    ln -s <...>/vkd3d-proton/ppc64le/pe-shim libvkd3d_d3d12
+
+Then:
+
+    cd <fex> && git apply .../fex-registration.patch
+    ninja -C build-thunks guest-libs host-libs
+
+Two things the CMake wiring does NOT do, because they are not CMake's job:
+
+  * install the guest .so where the PE shim's compiled-in default looks for it
+    (/usr/local/lib/fex-emu/libvkd3d_d3d12-guest.so, or anywhere and set
+    VKD3D_THUNK_GUEST_SO);
+  * create $FEX_THUNKHOSTLIBS/libvkd3d_d3d12.so.0 as a symlink to the native
+    libvkd3d-proton-d3d12.so. thunkgen's generated loader dlopens that name and
+    hands FEX a null export table if it fails -- see
+    libvkd3d_d3d12_interface.cpp.
+
+The three hunks are modelled on dxvk-ppc64le/pe-shim/fastppcx86-registration.patch
+and follow the libxshmfence pattern exactly, 64-bit guest only. Diffed against
+the fex-ppc64le tree as of 2026-08-13; expect to fuzz-adjust the line numbers
+on a different checkout.
+
+--- a/Data/ThunksDB.json
++++ b/Data/ThunksDB.json
+@@ -56,6 +56,15 @@
+         "@PREFIX_LIB@/libfex_thunk_test.so"
+       ]
+     },
++    "VKD3D_D3D12": {
++      "Library": "libvkd3d_d3d12-guest.so",
++      "Overlay": [
++        "@PREFIX_LIB@/libvkd3d-proton-d3d12.so",
++        "@PREFIX_LIB@/libvkd3d-proton-d3d12.so.0",
++        "@PREFIX_LIB@/libvkd3d-proton-d3d12core.so",
++        "@PREFIX_LIB@/libvkd3d-proton-d3d12core.so.0"
++      ]
++    },
+     "WaylandClient": {
+       "Library" : "libwayland-client-guest.so",
+       "Overlay": [
+--- a/ThunkLibs/GuestLibs/CMakeLists.txt
++++ b/ThunkLibs/GuestLibs/CMakeLists.txt
+@@ -290,6 +290,28 @@
+   add_guest_lib(xshmfence "libxshmfence.so.1")
+ endif()
+ 
++# libvkd3d_d3d12: the vkd3d-proton D3D12 COM thunk. 64-bit guest only -- D3D12
++# on a 32-bit process is not a target, and the vtable census is derived from a
++# 64-bit ABI analysis.
++#
++# Sources live outside this tree, in vkd3d-proton/ppc64le/{pe-shim,thunk}.
++# Symlink them in before configuring:
++#   ln -s .../vkd3d-proton/ppc64le/pe-shim ThunkLibs/libvkd3d_d3d12
++# add_guest_lib() looks for lib<NAME>/lib<NAME>_Guest.cpp, which is what the
++# pe-shim directory is named to provide.
++if (BITNESS EQUAL 64)
++  generate(libvkd3d_d3d12 ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/libvkd3d_d3d12_interface.cpp)
++  target_include_directories(libvkd3d_d3d12-guest-deps INTERFACE
++    ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/include
++    ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/generated
++    ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/runtime)
++  add_guest_lib(vkd3d_d3d12 "libvkd3d_d3d12-guest.so")
++  # The COM runtime and the generated vtable stubs, compiled in unmodified.
++  target_sources(vkd3d_d3d12-guest PRIVATE
++    ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/generated/vkd3d_thunk_guest.cpp
++    ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/runtime/vkd3d_proxy.cpp)
++endif()
++
+ generate(libwayland-client ${CMAKE_CURRENT_SOURCE_DIR}/../libwayland-client/libwayland-client_interface.cpp)
+ add_guest_lib(wayland-client "libwayland-client.so.0.20.0")
+ target_include_directories(libwayland-client-guest-deps INTERFACE /usr/include/wayland)
+--- a/ThunkLibs/HostLibs/CMakeLists.txt
++++ b/ThunkLibs/HostLibs/CMakeLists.txt
+@@ -242,6 +242,22 @@
+   generate(libxshmfence ${CMAKE_CURRENT_SOURCE_DIR}/../libxshmfence/libxshmfence_interface.cpp ${GUEST_BITNESS})
+   add_host_lib(xshmfence ${GUEST_BITNESS})
+ 
++  # libvkd3d_d3d12: see ThunkLibs/GuestLibs/CMakeLists.txt for the symlink this
++  # expects. The host half links against no vkd3d-proton library -- it is
++  # dlopened at run time, which is the project's "always dynamically attached"
++  # requirement.
++  if (GUEST_BITNESS EQUAL 64)
++    generate(libvkd3d_d3d12 ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/libvkd3d_d3d12_interface.cpp ${GUEST_BITNESS})
++    target_include_directories(libvkd3d_d3d12-${GUEST_BITNESS}-deps INTERFACE
++      ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/include
++      ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/generated
++      ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/runtime)
++    add_host_lib(vkd3d_d3d12 ${GUEST_BITNESS})
++    target_sources(vkd3d_d3d12-host-${GUEST_BITNESS} PRIVATE
++      ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/generated/vkd3d_thunk_host.cpp
++      ${CMAKE_CURRENT_SOURCE_DIR}/../libvkd3d_d3d12/../thunk/runtime/vkd3d_thunk_host_rt.cpp)
++  endif()
++
+   generate(libvulkan ${CMAKE_CURRENT_SOURCE_DIR}/../libvulkan/libvulkan_interface.cpp ${GUEST_BITNESS})
+   target_include_directories(libvulkan-${GUEST_BITNESS}-deps INTERFACE ${FEX_PROJECT_SOURCE_DIR}/External/Vulkan-Headers/include/)
+   add_host_lib(vulkan ${GUEST_BITNESS})

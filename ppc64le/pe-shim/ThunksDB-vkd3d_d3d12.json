@@ -1,0 +1,46 @@
+{
+  "_comment": [
+    "Standalone ThunksDB fragment for the vkd3d-proton D3D12 thunk. Merge the",
+    "DB entry into Data/ThunksDB.json (or the installed",
+    "share/fex-emu/ThunksDB.json); the ThunksDB block is what a per-application",
+    "config enables, exactly as Data/CI/VulkanThunks.json does for Vulkan.",
+    "",
+    "The Overlay list is NOT how the PE path reaches this library. There the PE",
+    "shim names the .so explicitly through wine's unixlib loader and no overlay",
+    "is involved -- FEX loads the host half purely from the guest half's",
+    "LOAD_LIB constructor, which turns the name libvkd3d_d3d12 into",
+    "$FEX_THUNKHOSTLIBS/libvkd3d_d3d12-host.so. Putting the two files where FEX",
+    "looks is the whole of the registration for a game:",
+    "",
+    "  install -Dm755 build/libvkd3d_d3d12-host.so  $FEX_THUNKHOSTLIBS/libvkd3d_d3d12-host.so",
+    "  install -Dm755 build/libvkd3d_d3d12-guest.so /usr/local/lib/fex-emu/libvkd3d_d3d12-guest.so",
+    "  ln -sf <native>/libvkd3d-proton-d3d12.so     $FEX_THUNKHOSTLIBS/libvkd3d_d3d12.so.0",
+    "",
+    "The second path is the PE shim's compiled-in default, overridable at run",
+    "time with VKD3D_THUNK_GUEST_SO. The third is the dlopen gate thunkgen's",
+    "generated loader insists on; see libvkd3d_d3d12_interface.cpp.",
+    "",
+    "The overlay covers the OTHER direction: a guest that dlopens vkd3d-proton",
+    "by name -- an x86-64 Linux build of vkd3d-proton running under FEX, or a",
+    "Proton that ships it as ELF -- gets the thunk substituted instead. Both",
+    "native libraries are listed because libvkd3d-proton-d3d12.so is only a",
+    "loader shim: a guest that reached d3d12core directly would otherwise walk",
+    "straight past the thunk.",
+    "",
+    "@PREFIX_LIB@ is expanded by FEX to the guest library directory."
+  ],
+  "DB": {
+    "VKD3D_D3D12": {
+      "Library": "libvkd3d_d3d12-guest.so",
+      "Overlay": [
+        "@PREFIX_LIB@/libvkd3d-proton-d3d12.so",
+        "@PREFIX_LIB@/libvkd3d-proton-d3d12.so.0",
+        "@PREFIX_LIB@/libvkd3d-proton-d3d12core.so",
+        "@PREFIX_LIB@/libvkd3d-proton-d3d12core.so.0"
+      ]
+    }
+  },
+  "ThunksDB": {
+    "VKD3D_D3D12": 1
+  }
+}

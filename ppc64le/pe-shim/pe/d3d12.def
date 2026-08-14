@@ -1,0 +1,30 @@
+; Export surface of the PE shim. The eight flat entry points are exactly those
+; of vkd3d-proton's own libs/d3d12/d3d12.def; everything else in D3D12 is
+; reached through COM vtables and needs no export.
+;
+; The build uses __declspec(dllexport) rather than this file, so this is
+; documentation plus the input for llvm-dlltool when something wants an import
+; library to link against d3d12.dll.
+;
+; D3D12SDKVersion / D3D12SDKPath are DATA: the AgilitySDK contract reads them
+; as variables, not as calls. vkd3d-proton exports D3D12SDKVersion from
+; d3d12core.dll (libs/d3d12core/d3d12core.def, "DATA PRIVATE"); this shim
+; carries both because docs/d3d12-boundary-analysis.md §1 lists them as part of
+; what d3d12.dll presents.
+;
+; NOT exported, deliberately: D3D12CoreCreateLayeredDevice,
+; D3D12CoreGetLayeredDeviceSize, D3D12CoreRegisterLayers. vkd3d-proton exports
+; none of them and no game imports them; see the note at the end of the export
+; block in pe/d3d12_shim.c.
+LIBRARY d3d12.dll
+EXPORTS
+    D3D12CreateDevice
+    D3D12GetDebugInterface
+    D3D12GetInterface
+    D3D12CreateRootSignatureDeserializer
+    D3D12CreateVersionedRootSignatureDeserializer
+    D3D12SerializeRootSignature
+    D3D12SerializeVersionedRootSignature
+    D3D12EnableExperimentalFeatures
+    D3D12SDKVersion DATA
+    D3D12SDKPath DATA

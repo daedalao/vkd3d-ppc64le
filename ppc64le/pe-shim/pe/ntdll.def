@@ -1,0 +1,28 @@
+; Just enough of ntdll for llvm-dlltool to synthesise an import library.
+;
+; A mingw-w64 sysroot would supply libntdll.a; the reference build machine had
+; none, and the shim is written to need none. These are the entire ntdll
+; surface the PE shim touches, and an import library is only a table of names,
+; so generating it costs nothing:
+;
+;   llvm-dlltool -m i386:x86-64 -d pe/ntdll.def -l build/libntdll.a
+;
+; RtlFindExportedRoutineByName and LdrGetDllHandle are how Wine's own
+; libs/winecrt0/unix_lib.c reaches __wine_unix_call_dispatcher; the shim
+; reproduces that because winecrt0 is likewise a PE static library we do not
+; have.
+;
+; RtlCreateUserThread and NtSetEvent are the fence pump's two needs. They are
+; taken from ntdll rather than kernel32 on purpose: kernel32!CreateThread
+; forwards to RtlCreateUserThread and kernel32!SetEvent forwards to NtSetEvent,
+; so nothing is lost, and the shim keeps a single-DLL import table with no
+; run-time symbol resolution that could fail silently.
+LIBRARY ntdll.dll
+EXPORTS
+    NtQueryVirtualMemory
+    LdrGetDllHandle
+    RtlFindExportedRoutineByName
+    RtlInitUnicodeString
+    RtlQueryEnvironmentVariable_U
+    RtlCreateUserThread
+    NtSetEvent
