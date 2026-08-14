@@ -1,0 +1,4 @@
+# The repository root .gitignore has `build.*`, which (having no slash) matches
+# at every level and would silently hide this directory's build script.  It is
+# a source file, not a build artefact.
+!build.sh
