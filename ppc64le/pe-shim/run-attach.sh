@@ -58,4 +58,11 @@ export VKD3D_THUNK_ABI=sysv
 # device selection or a chatty log.
 export VKD3D_DEBUG="${VKD3D_DEBUG:-warn}"
 
+# Device selection for the gpu round trip: the box has a V620 and two V340s;
+# the V620 is the deployment target.
+export VKD3D_FILTER_DEVICE_NAME="${VKD3D_FILTER_DEVICE_NAME:-V620}"
+
+if [ "${1:-}" = "gpu" ]; then
+    exec "$FEXBIN" "$B/gpu_roundtrip" "$B/libvkd3d_d3d12-guest.so"
+fi
 exec "$FEXBIN" "$B/attach" "$B/libvkd3d_d3d12-guest.so" "${1:-}"
