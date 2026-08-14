@@ -1,1 +1,5 @@
 build/
+
+# build.sh is a script, not a build artifact; the root build.* rule
+# (upstream, for build dirs) must not eat it.
+!build.sh
