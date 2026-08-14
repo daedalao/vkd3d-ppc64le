@@ -13,3 +13,6 @@ EXPORTS
     GetStdHandle
     WriteFile
     ExitProcess
+    CreateEventA
+    WaitForSingleObject
+    CloseHandle
