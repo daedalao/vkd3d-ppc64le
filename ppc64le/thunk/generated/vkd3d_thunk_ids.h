@@ -437,6 +437,177 @@ static inline uint32_t vkd3d_pump_kind(uint32_t iface, uint32_t slot) {
     return VKD3D_PUMP_NONE;
 }
 
+/* Guest-side slot overrides: the hand-written struct fixups in
+   runtime/vkd3d_struct_fixups.cpp, the one module in this tree that sees the
+   d3d12 headers.  Wired the way the float shapes are: hand_written() names the
+   symbol, so the generic worker is never emitted, k<I>_target and
+   k<I>_vtbl_sysv point straight at it, and the generic ms_abi forwarder calls
+   through target[].  Nothing is patched at run time.
+
+   One symbol per METHOD, shared by every interface that inherits it --
+   ResourceBarrier is slot 26 of eleven command-list interfaces -- so the stub
+   reads its slot out of kVkdFixupSlot[] and its interface id out of
+   self->iface, and no slot number is written down by hand.  The declarations
+   below are the ONLY contract between the generated tables and that module: it
+   includes this header, so a stub whose arity disagrees with the census fails
+   to compile rather than mis-indexing a register. */
+struct Proxy;
+
+enum VkdFixupKind : uint32_t {
+    /* ID3D12GraphicsCommandList::ResourceBarrier(UINT, D3D12_RESOURCE_BARRIER*) */
+    VKD3D_FIXUP_RESOURCE_BARRIER = 0,
+    /* ID3D12GraphicsCommandList::CopyTextureRegion(D3D12_TEXTURE_COPY_LOCATION*, UINT, UINT, UINT, D3D12_TEXTURE_COPY_LOCATION*, D3D12_BOX*) */
+    VKD3D_FIXUP_COPY_TEXTURE_REGION = 1,
+    /* ID3D12Device::CreateGraphicsPipelineState(D3D12_GRAPHICS_PIPELINE_STATE_DESC*, REFIID, void**) */
+    VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE = 2,
+    /* ID3D12Device::CreateComputePipelineState(D3D12_COMPUTE_PIPELINE_STATE_DESC*, REFIID, void**) */
+    VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE = 3,
+    /* ID3D12PipelineLibrary::LoadGraphicsPipeline(LPCWSTR, D3D12_GRAPHICS_PIPELINE_STATE_DESC*, REFIID, void**) */
+    VKD3D_FIXUP_LOAD_GRAPHICS_PIPELINE = 4,
+    /* ID3D12PipelineLibrary::LoadComputePipeline(LPCWSTR, D3D12_COMPUTE_PIPELINE_STATE_DESC*, REFIID, void**) */
+    VKD3D_FIXUP_LOAD_COMPUTE_PIPELINE = 5,
+    /* ID3D12Device2::CreatePipelineState(D3D12_PIPELINE_STATE_STREAM_DESC*, REFIID, void**) */
+    VKD3D_FIXUP_CREATE_PIPELINE_STATE = 6,
+    /* ID3D12PipelineLibrary1::LoadPipeline(LPCWSTR, D3D12_PIPELINE_STATE_STREAM_DESC*, REFIID, void**) */
+    VKD3D_FIXUP_LOAD_PIPELINE = 7,
+    /* ID3D12GraphicsCommandList4::BeginRenderPass(UINT, D3D12_RENDER_PASS_RENDER_TARGET_DESC*, D3D12_RENDER_PASS_DEPTH_STENCIL_DESC*, D3D12_RENDER_PASS_FLAGS) */
+    VKD3D_FIXUP_BEGIN_RENDER_PASS = 8,
+    /* ID3D12GraphicsCommandList7::Barrier(UINT32, D3D12_BARRIER_GROUP*) */
+    VKD3D_FIXUP_BARRIER = 9,
+    VKD3D_FIXUP_COUNT = 10
+};
+
+static const uint32_t kVkdFixupSlot[VKD3D_FIXUP_COUNT] = {
+    26, /* VKD3D_FIXUP_RESOURCE_BARRIER */
+    16, /* VKD3D_FIXUP_COPY_TEXTURE_REGION */
+    10, /* VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE */
+    11, /* VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE */
+    9, /* VKD3D_FIXUP_LOAD_GRAPHICS_PIPELINE */
+    10, /* VKD3D_FIXUP_LOAD_COMPUTE_PIPELINE */
+    47, /* VKD3D_FIXUP_CREATE_PIPELINE_STATE */
+    13, /* VKD3D_FIXUP_LOAD_PIPELINE */
+    68, /* VKD3D_FIXUP_BEGIN_RENDER_PASS */
+    80, /* VKD3D_FIXUP_BARRIER */
+};
+
+static const char* const kVkdFixupName[VKD3D_FIXUP_COUNT] = {
+    "ID3D12GraphicsCommandList::ResourceBarrier",
+    "ID3D12GraphicsCommandList::CopyTextureRegion",
+    "ID3D12Device::CreateGraphicsPipelineState",
+    "ID3D12Device::CreateComputePipelineState",
+    "ID3D12PipelineLibrary::LoadGraphicsPipeline",
+    "ID3D12PipelineLibrary::LoadComputePipeline",
+    "ID3D12Device2::CreatePipelineState",
+    "ID3D12PipelineLibrary1::LoadPipeline",
+    "ID3D12GraphicsCommandList4::BeginRenderPass",
+    "ID3D12GraphicsCommandList7::Barrier",
+};
+
+extern "C" {
+uint64_t vkd3d_fixup_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1);
+uint64_t vkd3d_fixup_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5);
+uint64_t vkd3d_fixup_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2);
+uint64_t vkd3d_fixup_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2);
+uint64_t vkd3d_fixup_LoadGraphicsPipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3);
+uint64_t vkd3d_fixup_LoadComputePipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3);
+uint64_t vkd3d_fixup_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2);
+uint64_t vkd3d_fixup_LoadPipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3);
+uint64_t vkd3d_fixup_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3);
+uint64_t vkd3d_fixup_Barrier(Proxy* self, uint64_t a0, uint64_t a1);
+}
+
+/* Every (interface, slot) the fixups claim.  The tests walk this
+   and assert vkd3d_thunk_vtable(iface)[slot] really is the fixup
+   symbol, so an inherited slot cannot be left generic. */
+struct VkdFixupSlot { uint32_t iface, slot, kind; };
+static const uint32_t kVkdFixupSlotCount = 84;
+static const VkdFixupSlot kVkdFixupSlots[] = {
+    { VKD3D_IFACE_ID3D12DEVICE, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE1, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device1::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE1, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device1::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE10, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device10::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE10, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device10::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE10, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device10::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE11, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device11::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE11, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device11::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE11, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device11::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE12, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device12::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE12, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device12::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE12, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device12::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE13, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device13::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE13, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device13::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE13, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device13::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE14, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device14::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE14, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device14::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE14, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device14::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE15, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device15::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE15, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device15::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE15, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device15::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE2, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device2::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE2, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device2::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE2, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device2::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE3, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device3::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE3, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device3::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE3, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device3::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE4, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device4::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE4, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device4::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE4, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device4::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE5, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device5::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE5, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device5::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE5, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device5::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE6, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device6::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE6, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device6::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE6, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device6::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE7, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device7::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE7, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device7::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE7, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device7::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE8, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device8::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE8, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device8::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE8, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device8::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE9, 10, VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE }, /* ID3D12Device9::CreateGraphicsPipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE9, 11, VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE }, /* ID3D12Device9::CreateComputePipelineState */
+    { VKD3D_IFACE_ID3D12DEVICE9, 47, VKD3D_FIXUP_CREATE_PIPELINE_STATE }, /* ID3D12Device9::CreatePipelineState */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST1, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList1::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST1, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList1::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList10::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList10::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 68, VKD3D_FIXUP_BEGIN_RENDER_PASS }, /* ID3D12GraphicsCommandList10::BeginRenderPass */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 80, VKD3D_FIXUP_BARRIER }, /* ID3D12GraphicsCommandList10::Barrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST2, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList2::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST2, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList2::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST3, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList3::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST3, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList3::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList4::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList4::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 68, VKD3D_FIXUP_BEGIN_RENDER_PASS }, /* ID3D12GraphicsCommandList4::BeginRenderPass */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList5::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList5::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 68, VKD3D_FIXUP_BEGIN_RENDER_PASS }, /* ID3D12GraphicsCommandList5::BeginRenderPass */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList6::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList6::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 68, VKD3D_FIXUP_BEGIN_RENDER_PASS }, /* ID3D12GraphicsCommandList6::BeginRenderPass */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList7::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList7::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 68, VKD3D_FIXUP_BEGIN_RENDER_PASS }, /* ID3D12GraphicsCommandList7::BeginRenderPass */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 80, VKD3D_FIXUP_BARRIER }, /* ID3D12GraphicsCommandList7::Barrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList8::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList8::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 68, VKD3D_FIXUP_BEGIN_RENDER_PASS }, /* ID3D12GraphicsCommandList8::BeginRenderPass */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 80, VKD3D_FIXUP_BARRIER }, /* ID3D12GraphicsCommandList8::Barrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 16, VKD3D_FIXUP_COPY_TEXTURE_REGION }, /* ID3D12GraphicsCommandList9::CopyTextureRegion */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 26, VKD3D_FIXUP_RESOURCE_BARRIER }, /* ID3D12GraphicsCommandList9::ResourceBarrier */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 68, VKD3D_FIXUP_BEGIN_RENDER_PASS }, /* ID3D12GraphicsCommandList9::BeginRenderPass */
+    { VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 80, VKD3D_FIXUP_BARRIER }, /* ID3D12GraphicsCommandList9::Barrier */
+    { VKD3D_IFACE_ID3D12PIPELINELIBRARY, 9, VKD3D_FIXUP_LOAD_GRAPHICS_PIPELINE }, /* ID3D12PipelineLibrary::LoadGraphicsPipeline */
+    { VKD3D_IFACE_ID3D12PIPELINELIBRARY, 10, VKD3D_FIXUP_LOAD_COMPUTE_PIPELINE }, /* ID3D12PipelineLibrary::LoadComputePipeline */
+    { VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 9, VKD3D_FIXUP_LOAD_GRAPHICS_PIPELINE }, /* ID3D12PipelineLibrary1::LoadGraphicsPipeline */
+    { VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 10, VKD3D_FIXUP_LOAD_COMPUTE_PIPELINE }, /* ID3D12PipelineLibrary1::LoadComputePipeline */
+    { VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 13, VKD3D_FIXUP_LOAD_PIPELINE }, /* ID3D12PipelineLibrary1::LoadPipeline */
+};
+
 /* Per-slot record of what a slot's parameters need AND whether the generated
    stub handles it.  MARSHALLED means the guest stub wraps/unwraps every
    interface pointer in the signature; HAND means a runtime/ symbol does.
@@ -454,6 +625,7 @@ static inline uint32_t vkd3d_pump_kind(uint32_t iface, uint32_t slot) {
 #define VKD3D_SLOT_AGG_RETURN   512u  /* explicit __ret pointer, returned back */
 #define VKD3D_SLOT_BYVAL_AGG    1024u /* by-value aggregate of <= 8 bytes */
 #define VKD3D_SLOT_PUMP         2048u /* host-side override: the fence/event pump */
+#define VKD3D_SLOT_FIXUP        4096u /* guest-side override: the struct fixups */
 
 /* Bits that mean "this slot carries an interface pointer". */
 #define VKD3D_SLOT_IFACE_PTRS \
@@ -478,13 +650,27 @@ static inline uint32_t vkd3d_pump_kind(uint32_t iface, uint32_t slot) {
    property every OUT parameter here already depends on -- so warning about it
    would be noise, not a finding.  dxvk reports its equivalent because the
    correctness of GetDecoderBuffer's buffer had never been established there.
-   STRUCT_IFACE is reported: the struct passes by pointer with no repacking, so
-   the interface pointers INSIDE it are still guest proxies.  REFUSED means the
-   generator could not marshal the slot at all. */
+   STRUCT_IFACE is reported unless a FIXUP claims the slot.  The struct passes
+   by pointer with no repacking, so the interface pointers INSIDE it are still
+   guest proxies -- unless the slot is served by a hand-written fixup from
+   runtime/vkd3d_struct_fixups.cpp, which copies the aggregate and rewrites
+   them.  Those slots keep the STRUCT_IFACE bit (they DO carry such a struct,
+   and the inventory counts them) and gain HAND | FIXUP, so this predicate goes
+   quiet for exactly them and stays loud for the residue -- CreateStateObject,
+   AddToStateObject and the DRED breadcrumb output.
+
+   The second test is against FIXUP and NOT against HANDLED, which would be the
+   easy mistake: CreateStateObject's generated stub marshals its riid-driven
+   out-parameter and so carries MARSHALLED, but nothing whatsoever translates
+   the D3D12_STATE_OBJECT_DESC it also takes.  Only a fixup does that.
+
+   REFUSED means the generator could not marshal the slot at all. */
 static inline int vkd3d_slot_untranslated(uint16_t f) {
     if ((f & VKD3D_SLOT_IFACE_PTRS) && !(f & VKD3D_SLOT_HANDLED))
         return 1;
-    return (f & (VKD3D_SLOT_REFUSED | VKD3D_SLOT_STRUCT_IFACE)) ? 1 : 0;
+    if ((f & VKD3D_SLOT_STRUCT_IFACE) && !(f & VKD3D_SLOT_FIXUP))
+        return 1;
+    return (f & VKD3D_SLOT_REFUSED) ? 1 : 0;
 }
 
 static const uint16_t kVkdSlotFlags_ID3D10Blob[] = {16,16,16,0,0};
@@ -496,22 +682,22 @@ static const uint16_t kVkdSlotFlags_ID3D12CommandSignature[] = {16,16,16,0,0,33,
 static const uint16_t kVkdSlotFlags_ID3D12Debug[] = {16,16,16,0};
 static const uint16_t kVkdSlotFlags_ID3D12Debug1[] = {16,16,16,0,0,0};
 static const uint16_t kVkdSlotFlags_ID3D12DescriptorHeap[] = {16,16,16,0,0,33,0,40,512,512,512};
-static const uint16_t kVkdSlotFlags_ID3D12Device[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512};
-static const uint16_t kVkdSlotFlags_ID3D12Device1[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36};
-static const uint16_t kVkdSlotFlags_ID3D12Device10[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41};
-static const uint16_t kVkdSlotFlags_ID3D12Device11[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024};
-static const uint16_t kVkdSlotFlags_ID3D12Device12[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512};
-static const uint16_t kVkdSlotFlags_ID3D12Device13[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512,40};
-static const uint16_t kVkdSlotFlags_ID3D12Device14[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512,40,40};
-static const uint16_t kVkdSlotFlags_ID3D12Device15[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512,40,40,0,0,1057,1057,1024,1024,1057,1057,1057,40,33};
-static const uint16_t kVkdSlotFlags_ID3D12Device2[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296};
-static const uint16_t kVkdSlotFlags_ID3D12Device3[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37};
-static const uint16_t kVkdSlotFlags_ID3D12Device4[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512};
-static const uint16_t kVkdSlotFlags_ID3D12Device5[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0};
-static const uint16_t kVkdSlotFlags_ID3D12Device6[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0};
-static const uint16_t kVkdSlotFlags_ID3D12Device7[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40};
-static const uint16_t kVkdSlotFlags_ID3D12Device8[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0};
-static const uint16_t kVkdSlotFlags_ID3D12Device9[] = {16,16,16,0,0,33,0,0,40,40,296,296,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,296,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40};
+static const uint16_t kVkdSlotFlags_ID3D12Device[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512};
+static const uint16_t kVkdSlotFlags_ID3D12Device1[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36};
+static const uint16_t kVkdSlotFlags_ID3D12Device10[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41};
+static const uint16_t kVkdSlotFlags_ID3D12Device11[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024};
+static const uint16_t kVkdSlotFlags_ID3D12Device12[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512};
+static const uint16_t kVkdSlotFlags_ID3D12Device13[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512,40};
+static const uint16_t kVkdSlotFlags_ID3D12Device14[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512,40,40};
+static const uint16_t kVkdSlotFlags_ID3D12Device15[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40,41,41,41,1024,512,40,40,0,0,1057,1057,1024,1024,1057,1057,1057,40,33};
+static const uint16_t kVkdSlotFlags_ID3D12Device2[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376};
+static const uint16_t kVkdSlotFlags_ID3D12Device3[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37};
+static const uint16_t kVkdSlotFlags_ID3D12Device4[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512};
+static const uint16_t kVkdSlotFlags_ID3D12Device5[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0};
+static const uint16_t kVkdSlotFlags_ID3D12Device6[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0};
+static const uint16_t kVkdSlotFlags_ID3D12Device7[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40};
+static const uint16_t kVkdSlotFlags_ID3D12Device8[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0};
+static const uint16_t kVkdSlotFlags_ID3D12Device9[] = {16,16,16,0,0,33,0,0,40,40,4376,4376,41,0,40,0,40,1024,1057,1057,1057,1057,1024,0,1024,512,512,40,40,41,40,33,40,0,36,36,40,0,0,40,0,41,33,512,40,2084,36,4376,40,40,37,40,40,41,41,41,512,41,0,0,0,40,296,0,0,0,297,40,512,41,41,1057,0,40,0,40};
 static const uint16_t kVkdSlotFlags_ID3D12DeviceChild[] = {16,16,16,0,0,33,0,40};
 static const uint16_t kVkdSlotFlags_ID3D12DeviceConfiguration[] = {16,16,16,512,0,0,40};
 static const uint16_t kVkdSlotFlags_ID3D12DeviceConfiguration1[] = {16,16,16,512,0,0,40,40};
@@ -522,17 +708,17 @@ static const uint16_t kVkdSlotFlags_ID3D12DeviceRemovedExtendedDataSettings1[] =
 static const uint16_t kVkdSlotFlags_ID3D12DeviceRemovedExtendedDataSettings2[] = {16,16,16,0,0,0,0,0};
 static const uint16_t kVkdSlotFlags_ID3D12Fence[] = {16,16,16,0,0,33,0,40,0,2048,0};
 static const uint16_t kVkdSlotFlags_ID3D12Fence1[] = {16,16,16,0,0,33,0,40,0,2048,0,0};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList1[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList10[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,256,0,33,33,0,0,0,33,0,0,33,0,256,0,16,0,0,0};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList2[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList3[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList4[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,256,0,33,33,0,0,0,33,0};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList5[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,256,0,33,33,0,0,0,33,0,0,33};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList6[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,256,0,33,33,0,0,0,33,0,0,33,0};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList7[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,256,0,33,33,0,0,0,33,0,0,33,0,256};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList8[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,256,0,33,33,0,0,0,33,0,0,33,0,256,0};
-static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList9[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,256,33,33,33,0,0,0,0,0,33,256,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,256,0,33,33,0,0,0,33,0,0,33,0,256,0,16,0};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList1[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList10[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,4368,0,33,33,0,0,0,33,0,0,33,0,4368,0,16,0,0,0};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList2[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList3[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList4[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,4368,0,33,33,0,0,0,33,0};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList5[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,4368,0,33,33,0,0,0,33,0,0,33};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList6[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,4368,0,33,33,0,0,0,33,0,0,33,0};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList7[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,4368,0,33,33,0,0,0,33,0,0,33,0,4368};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList8[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,4368,0,33,33,0,0,0,33,0,0,33,0,4368,0};
+static const uint16_t kVkdSlotFlags_ID3D12GraphicsCommandList9[] = {16,16,16,0,0,33,0,40,0,0,33,33,0,0,0,33,4368,33,33,33,0,0,0,0,0,33,4368,33,36,33,33,1024,1024,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1040,1024,1057,1057,33,33,33,33,33,0,0,0,33,37,37,16,0,33,0,0,33,4368,0,33,33,0,0,0,33,0,0,33,0,4368,0,16,0};
 static const uint16_t kVkdSlotFlags_ID3D12Heap[] = {16,16,16,0,0,33,0,40,512};
 static const uint16_t kVkdSlotFlags_ID3D12Heap1[] = {16,16,16,0,0,33,0,40,512,40};
 static const uint16_t kVkdSlotFlags_ID3D12LifetimeOwner[] = {16,16,16,0};
@@ -540,8 +726,8 @@ static const uint16_t kVkdSlotFlags_ID3D12LifetimeTracker[] = {16,16,16,33};
 static const uint16_t kVkdSlotFlags_ID3D12MetaCommand[] = {16,16,16,0,0,33,0,40,0};
 static const uint16_t kVkdSlotFlags_ID3D12Object[] = {16,16,16,0,0,33,0};
 static const uint16_t kVkdSlotFlags_ID3D12Pageable[] = {16,16,16,0,0,33,0,40};
-static const uint16_t kVkdSlotFlags_ID3D12PipelineLibrary[] = {16,16,16,0,0,33,0,40,33,296,296,0,0};
-static const uint16_t kVkdSlotFlags_ID3D12PipelineLibrary1[] = {16,16,16,0,0,33,0,40,33,296,296,0,0,296};
+static const uint16_t kVkdSlotFlags_ID3D12PipelineLibrary[] = {16,16,16,0,0,33,0,40,33,4376,4376,0,0};
+static const uint16_t kVkdSlotFlags_ID3D12PipelineLibrary1[] = {16,16,16,0,0,33,0,40,33,4376,4376,0,0,4376};
 static const uint16_t kVkdSlotFlags_ID3D12PipelineState[] = {16,16,16,0,0,33,0,40,0};
 static const uint16_t kVkdSlotFlags_ID3D12ProtectedResourceSession[] = {16,16,16,0,0,33,0,40,40,0,512};
 static const uint16_t kVkdSlotFlags_ID3D12ProtectedResourceSession1[] = {16,16,16,0,0,33,0,40,40,0,512,512};
@@ -679,8 +865,17 @@ uint64_t vkd3d_host_pump_dispatch(uint32_t kind, uint32_t iface, uint32_t slot,
 #define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_SETGRAPHICSROOTDESCRIPTORTABLE 32u
 #define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_CLEARRENDERTARGETVIEW 48u
 #define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER 26u
+#define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_COPYTEXTUREREGION 16u
 #define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_SETDESCRIPTORHEAPS 28u
 #define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_CLOSE 9u
+#define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST4_BEGINRENDERPASS 68u
+#define VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST7_BARRIER 80u
+#define VKD3D_SLOT_ID3D12DEVICE_CREATEGRAPHICSPIPELINESTATE 10u
+#define VKD3D_SLOT_ID3D12DEVICE_CREATECOMPUTEPIPELINESTATE 11u
+#define VKD3D_SLOT_ID3D12DEVICE2_CREATEPIPELINESTATE 47u
+#define VKD3D_SLOT_ID3D12DEVICE5_CREATESTATEOBJECT 62u
+#define VKD3D_SLOT_ID3D12PIPELINELIBRARY_LOADGRAPHICSPIPELINE 9u
+#define VKD3D_SLOT_ID3D12PIPELINELIBRARY1_LOADPIPELINE 13u
 #define VKD3D_SLOT_ID3D12FENCE_SETEVENTONCOMPLETION 9u
 #define VKD3D_SLOT_ID3D12FENCE_GETCOMPLETEDVALUE 8u
 #define VKD3D_SLOT_ID3D12RESOURCE_MAP 8u

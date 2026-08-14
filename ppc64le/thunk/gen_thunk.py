@@ -249,6 +249,105 @@ PUMP_KIND_ORDER = ["VKD3D_PUMP_NONE", "VKD3D_PUMP_FENCE_EVENT",
                    "VKD3D_PUMP_MULTI_FENCE_EVENT"]
 
 # --------------------------------------------------------------------------
+# GUEST-side slot overrides: the hand-written struct fixups.
+#
+# These are the slots whose PARAMETER STRUCTS embed interface pointers, so the
+# generic "pass the aggregate by pointer, untouched" rule would hand native
+# vkd3d-proton a guest Proxy* buried inside a D3D12_RESOURCE_BARRIER.  The
+# inventory and the design rules are ppc64le/docs/struct-fixup-census.md.
+#
+# The mechanism is EXACTLY the float-class one: hand_written() returns a
+# runtime/ symbol, so the generic worker is not emitted, k<I>_target and
+# k<I>_vtbl_sysv point at that symbol, and the generic ms_abi forwarder calls
+# through target[].  Nothing is patched at run time.
+#
+# One extern symbol per METHOD SHAPE, shared by every interface that inherits
+# the method: the stub derives the vtable slot from kVkdFixupSlot[kind] and the
+# interface id from self->iface, exactly as the float stubs do, so no slot
+# number is written down by hand.  check_invariants() proves every inheriting
+# interface agrees on the slot AND on the parameter shape, because the stub
+# indexes its arguments positionally.
+#
+#   (declaring interface, method) ->
+#       (kind enum, runtime symbol, [parameter base types, "*" = one pointer])
+# --------------------------------------------------------------------------
+FIXUP_SLOTS = {
+    ("ID3D12GraphicsCommandList", "ResourceBarrier"):
+        ("VKD3D_FIXUP_RESOURCE_BARRIER", "vkd3d_fixup_ResourceBarrier",
+         ["UINT", "D3D12_RESOURCE_BARRIER*"]),
+    ("ID3D12GraphicsCommandList", "CopyTextureRegion"):
+        ("VKD3D_FIXUP_COPY_TEXTURE_REGION", "vkd3d_fixup_CopyTextureRegion",
+         ["D3D12_TEXTURE_COPY_LOCATION*", "UINT", "UINT", "UINT",
+          "D3D12_TEXTURE_COPY_LOCATION*", "D3D12_BOX*"]),
+    ("ID3D12Device", "CreateGraphicsPipelineState"):
+        ("VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE",
+         "vkd3d_fixup_CreateGraphicsPipelineState",
+         ["D3D12_GRAPHICS_PIPELINE_STATE_DESC*", "REFIID", "void**"]),
+    ("ID3D12Device", "CreateComputePipelineState"):
+        ("VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE",
+         "vkd3d_fixup_CreateComputePipelineState",
+         ["D3D12_COMPUTE_PIPELINE_STATE_DESC*", "REFIID", "void**"]),
+    ("ID3D12PipelineLibrary", "LoadGraphicsPipeline"):
+        ("VKD3D_FIXUP_LOAD_GRAPHICS_PIPELINE",
+         "vkd3d_fixup_LoadGraphicsPipeline",
+         ["LPCWSTR", "D3D12_GRAPHICS_PIPELINE_STATE_DESC*", "REFIID", "void**"]),
+    ("ID3D12PipelineLibrary", "LoadComputePipeline"):
+        ("VKD3D_FIXUP_LOAD_COMPUTE_PIPELINE",
+         "vkd3d_fixup_LoadComputePipeline",
+         ["LPCWSTR", "D3D12_COMPUTE_PIPELINE_STATE_DESC*", "REFIID", "void**"]),
+    ("ID3D12Device2", "CreatePipelineState"):
+        ("VKD3D_FIXUP_CREATE_PIPELINE_STATE", "vkd3d_fixup_CreatePipelineState",
+         ["D3D12_PIPELINE_STATE_STREAM_DESC*", "REFIID", "void**"]),
+    ("ID3D12PipelineLibrary1", "LoadPipeline"):
+        ("VKD3D_FIXUP_LOAD_PIPELINE", "vkd3d_fixup_LoadPipeline",
+         ["LPCWSTR", "D3D12_PIPELINE_STATE_STREAM_DESC*", "REFIID", "void**"]),
+    ("ID3D12GraphicsCommandList4", "BeginRenderPass"):
+        ("VKD3D_FIXUP_BEGIN_RENDER_PASS", "vkd3d_fixup_BeginRenderPass",
+         ["UINT", "D3D12_RENDER_PASS_RENDER_TARGET_DESC*",
+          "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC*", "D3D12_RENDER_PASS_FLAGS"]),
+    ("ID3D12GraphicsCommandList7", "Barrier"):
+        ("VKD3D_FIXUP_BARRIER", "vkd3d_fixup_Barrier",
+         ["UINT32", "D3D12_BARRIER_GROUP*"]),
+}
+
+FIXUP_KIND_ORDER = [
+    "VKD3D_FIXUP_RESOURCE_BARRIER",
+    "VKD3D_FIXUP_COPY_TEXTURE_REGION",
+    "VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE",
+    "VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE",
+    "VKD3D_FIXUP_LOAD_GRAPHICS_PIPELINE",
+    "VKD3D_FIXUP_LOAD_COMPUTE_PIPELINE",
+    "VKD3D_FIXUP_CREATE_PIPELINE_STATE",
+    "VKD3D_FIXUP_LOAD_PIPELINE",
+    "VKD3D_FIXUP_BEGIN_RENDER_PASS",
+    "VKD3D_FIXUP_BARRIER",
+]
+
+# --------------------------------------------------------------------------
+# Struct-with-interface slots this package deliberately does NOT fix, which
+# therefore keep crossing raw and keep their STRUCT_IFACE flag, their
+# per-call warning and their VKD3D_THUNK_STRICT abort.  Written down so that
+# check_invariants() can prove
+#
+#     every struct-with-interface slot  ==  fixed  +  explicitly left
+#
+# with nothing unaccounted for.  A new one appearing in a regenerated census
+# FAILS generation rather than joining the residue silently.
+# --------------------------------------------------------------------------
+LEFT_STRUCT_SLOTS = {
+    ("ID3D12Device5", "CreateStateObject"):
+        "D3D12_STATE_OBJECT_DESC's subobject array is self-referential "
+        "(SUBOBJECT_TO_EXPORTS_ASSOCIATION points at sibling subobjects, so a "
+        "copy needs pointer rebasing); deferred to the RT milestone",
+    ("ID3D12Device7", "AddToStateObject"):
+        "same D3D12_STATE_OBJECT_DESC walk as CreateStateObject",
+    ("ID3D12DeviceRemovedExtendedData", "GetAutoBreadcrumbsOutput"):
+        "OUT direction: the host writes host ID3D12CommandQueue* / "
+        "ID3D12GraphicsCommandList* into a guest-visible DRED node chain.  "
+        "Diagnostics only, never on the frame loop; documented passthrough",
+}
+
+# --------------------------------------------------------------------------
 # Slot numbers the tests drive, emitted as named constants so a regenerated
 # interfaces.json cannot leave a test calling the neighbouring method with this
 # method's arguments.  Generation fails if one disappears.
@@ -267,8 +366,17 @@ NAMED_SLOTS = [
     ("ID3D12GraphicsCommandList", "SetGraphicsRootDescriptorTable"),
     ("ID3D12GraphicsCommandList", "ClearRenderTargetView"),
     ("ID3D12GraphicsCommandList", "ResourceBarrier"),
+    ("ID3D12GraphicsCommandList", "CopyTextureRegion"),
     ("ID3D12GraphicsCommandList", "SetDescriptorHeaps"),
     ("ID3D12GraphicsCommandList", "Close"),
+    ("ID3D12GraphicsCommandList4", "BeginRenderPass"),
+    ("ID3D12GraphicsCommandList7", "Barrier"),
+    ("ID3D12Device", "CreateGraphicsPipelineState"),
+    ("ID3D12Device", "CreateComputePipelineState"),
+    ("ID3D12Device2", "CreatePipelineState"),
+    ("ID3D12Device5", "CreateStateObject"),
+    ("ID3D12PipelineLibrary", "LoadGraphicsPipeline"),
+    ("ID3D12PipelineLibrary1", "LoadPipeline"),
     ("ID3D12Fence", "SetEventOnCompletion"),
     ("ID3D12Fence", "GetCompletedValue"),
     ("ID3D12Resource", "Map"),
@@ -290,6 +398,7 @@ FLAG_STRUCT_IFACE = 256    # by-pointer struct with interface members inside it
 FLAG_AGG_RETURN   = 512    # explicit __ret pointer, returned back
 FLAG_BYVAL_AGG    = 1024   # takes a by-value aggregate (<= 8 bytes)
 FLAG_PUMP         = 2048   # host-side slot override (fence/event pump)
+FLAG_FIXUP        = 4096   # guest-side hand-written struct fixup
 
 HEADER = """/* GENERATED by gen_thunk.py -- do not edit.
  *
@@ -455,6 +564,11 @@ def iface_bearing_structs(gen_dir, iface_names):
 
 
 # ---------------------------------------------------------------------------
+def fixup_of(slot):
+    """The FIXUP_SLOTS entry serving this slot, or None."""
+    return FIXUP_SLOTS.get((slot["owner"], slot["name"]))
+
+
 def hand_written(name, slot):
     """Symbol serving this slot from runtime/, or None to generate a stub."""
     if slot["slot"] < 3:
@@ -463,6 +577,8 @@ def hand_written(name, slot):
     key = (slot["owner"], slot["name"])
     if key in FLOAT_METHODS:
         return FLOAT_METHODS[key][1]
+    if key in FIXUP_SLOTS:
+        return FIXUP_SLOTS[key][1]
     return None
 
 
@@ -787,6 +903,84 @@ def check_invariants(ifaces, names, struct_iface):
         if PUMP_SLOTS[key][0] not in pslot:
             errs.append("PUMP_SLOTS has %s::%s, which no slot uses" % key)
 
+    # The struct fixups.  Same three questions as the pump, plus two more that
+    # only matter here: the ms_abi forwarder for a fixup slot is the GENERIC
+    # uint64_t one, which is correct only if every parameter is integer-class
+    # and no aggregate is returned; and the slot must really be one the census
+    # found a struct-with-interface in, so a stale entry cannot sit here
+    # pretending to fix something.
+    xslot = {}
+    xcount = {}
+    for n in names:
+        for s in ifaces[n]["slots"]:
+            key = (s["owner"], s["name"])
+            if key not in FIXUP_SLOTS:
+                continue
+            kind, sym, shape = FIXUP_SLOTS[key]
+            prev = xslot.setdefault(kind, (s["slot"], n))
+            xcount[kind] = xcount.get(kind, 0) + 1
+            if prev[0] != s["slot"]:
+                errs.append("%s: slot %d in %s but %d in %s"
+                            % (kind, s["slot"], n, prev[0], prev[1]))
+            if len(s["params"]) != len(shape):
+                errs.append("%s: %s::%s has %d parameters, the fixup expects %d"
+                            % (kind, n, s["name"], len(s["params"]), len(shape)))
+                continue
+            for idx, want in enumerate(shape):
+                wstars = want.count("*")
+                wbase = want.replace("*", "")
+                stars, b = param_base(s["params"][idx])
+                if (stars, b) != (wstars, wbase):
+                    errs.append("%s: %s::%s arg %d is %r, the fixup expects "
+                                "%s%s" % (kind, n, s["name"], idx,
+                                          s["params"][idx], wbase, "*" * wstars))
+            # Generic uint64_t transport, in both directions.
+            if s.get("aggregate_return"):
+                errs.append("%s: %s::%s returns an aggregate; the generic "
+                            "ms_abi forwarder returns uint64_t" % (kind, n, s["name"]))
+            if s["ret"] not in ("void", "HRESULT"):
+                errs.append("%s: %s::%s returns %s; the fixups assume void or "
+                            "HRESULT" % (kind, n, s["name"], s["ret"]))
+            for p in s["params"]:
+                stars, b = param_base(p)
+                if stars:
+                    continue
+                if is_float_class(b) or b in BYVAL_AGGREGATES or b in BYVAL_REFUSED:
+                    errs.append("%s: %s::%s takes %r by value, which the generic "
+                                "uint64_t ms_abi forwarder cannot carry"
+                                % (kind, n, s["name"], p))
+            f, _ = classify(iface_names, struct_iface, n, s)
+            if not (f & FLAG_STRUCT_IFACE):
+                errs.append("%s: %s::%s is in FIXUP_SLOTS but the census finds "
+                            "no struct with interface members in its signature"
+                            % (kind, n, s["name"]))
+    for key in sorted(set(FIXUP_SLOTS)):
+        if FIXUP_SLOTS[key][0] not in xslot:
+            errs.append("FIXUP_SLOTS has %s::%s, which no slot uses" % key)
+    if sorted(FIXUP_KIND_ORDER) != sorted(v[0] for v in FIXUP_SLOTS.values()):
+        errs.append("FIXUP_KIND_ORDER and FIXUP_SLOTS disagree")
+    if len(set(v[1] for v in FIXUP_SLOTS.values())) != len(FIXUP_SLOTS):
+        errs.append("two FIXUP_SLOTS entries share one runtime symbol")
+
+    # Reconciliation: every struct-with-interface slot is either fixed here or
+    # explicitly left behind.  Nothing may be unaccounted for in either
+    # direction, so a new struct-bearing method in a regenerated census stops
+    # generation instead of quietly joining the residue.
+    struct_methods = set()
+    for n in names:
+        for s in ifaces[n]["slots"]:
+            if s["slot"] < 3 or (s["owner"], s["name"]) in FLOAT_METHODS:
+                continue
+            f, _ = classify(iface_names, struct_iface, n, s)
+            if f & FLAG_STRUCT_IFACE:
+                struct_methods.add((s["owner"], s["name"]))
+    for key in sorted(struct_methods - set(FIXUP_SLOTS) - set(LEFT_STRUCT_SLOTS)):
+        errs.append("%s::%s carries a struct with interface members and is in "
+                    "neither FIXUP_SLOTS nor LEFT_STRUCT_SLOTS" % key)
+    for key in sorted(set(LEFT_STRUCT_SLOTS) - struct_methods):
+        errs.append("LEFT_STRUCT_SLOTS has %s::%s, which carries no struct with "
+                    "interface members" % key)
+
     for n, m in NAMED_SLOTS:
         if n not in ifaces or not [s for s in ifaces[n]["slots"] if s["name"] == m]:
             errs.append("NAMED_SLOTS: %s::%s no longer exists; a test drives it"
@@ -808,16 +1002,18 @@ def check_invariants(ifaces, names, struct_iface):
         raise SystemExit("gen_thunk: invariant check failed")
 
     return ({k: v[0] for k, v in fslot.items()}, fcount,
-            {k: v[0] for k, v in pslot.items()}, pcount)
+            {k: v[0] for k, v in pslot.items()}, pcount,
+            {k: v[0] for k, v in xslot.items()}, xcount)
 
 
 # ---------------------------------------------------------------------------
-def emit_ids(ifaces, out, fslot, pslot, struct_iface, iface_names):
+def emit_ids(ifaces, out, fslot, pslot, xslot, struct_iface, iface_names):
     names = sorted(n for n, i in ifaces.items() if i["slots"])
 
     counts = {"in": 0, "out": 0, "arr": 0, "riid": 0, "raw": 0, "hand": 0,
               "clean": 0, "marshalled": 0, "refused": 0, "total": 0,
-              "struct": 0, "agg": 0, "byval": 0, "pump": 0, "struct_only": 0}
+              "struct": 0, "agg": 0, "byval": 0, "pump": 0, "struct_only": 0,
+              "fixup": 0, "struct_fixed": 0, "struct_left": 0}
     inventory = []          # (iface, slot, method, struct type)
 
     with open(os.path.join(out, "vkd3d_thunk_ids.h"), "w") as fh:
@@ -964,6 +1160,69 @@ enum VkdPumpKind : uint32_t {
 
 """)
 
+        # ---- struct fixups ---------------------------------------------
+        fh.write("""/* Guest-side slot overrides: the hand-written struct fixups in
+   runtime/vkd3d_struct_fixups.cpp, the one module in this tree that sees the
+   d3d12 headers.  Wired the way the float shapes are: hand_written() names the
+   symbol, so the generic worker is never emitted, k<I>_target and
+   k<I>_vtbl_sysv point straight at it, and the generic ms_abi forwarder calls
+   through target[].  Nothing is patched at run time.
+
+   One symbol per METHOD, shared by every interface that inherits it --
+   ResourceBarrier is slot %d of eleven command-list interfaces -- so the stub
+   reads its slot out of kVkdFixupSlot[] and its interface id out of
+   self->iface, and no slot number is written down by hand.  The declarations
+   below are the ONLY contract between the generated tables and that module: it
+   includes this header, so a stub whose arity disagrees with the census fails
+   to compile rather than mis-indexing a register. */
+struct Proxy;
+
+enum VkdFixupKind : uint32_t {
+""" % xslot["VKD3D_FIXUP_RESOURCE_BARRIER"])
+        by_kind = {v[0]: (k, v) for k, v in FIXUP_SLOTS.items()}
+        for i, kind in enumerate(FIXUP_KIND_ORDER):
+            (owner, meth), (_, sym, shape) = by_kind[kind]
+            fh.write("    /* %s::%s(%s) */\n"
+                     % (owner, meth, ", ".join(shape)))
+            fh.write("    %s = %d,\n" % (kind, i))
+        fh.write("    VKD3D_FIXUP_COUNT = %d\n};\n\n" % len(FIXUP_KIND_ORDER))
+
+        fh.write("static const uint32_t kVkdFixupSlot[VKD3D_FIXUP_COUNT] = {\n")
+        for kind in FIXUP_KIND_ORDER:
+            fh.write("    %d, /* %s */\n" % (xslot[kind], kind))
+        fh.write("};\n\n")
+        fh.write("static const char* const kVkdFixupName[VKD3D_FIXUP_COUNT] = {\n")
+        for kind in FIXUP_KIND_ORDER:
+            (owner, meth), _ = by_kind[kind]
+            fh.write('    "%s::%s",\n' % (owner, meth))
+        fh.write("};\n\n")
+
+        fh.write('extern "C" {\n')
+        for kind in FIXUP_KIND_ORDER:
+            (owner, meth), (_, sym, shape) = by_kind[kind]
+            args = "".join(", uint64_t a%d" % i for i in range(len(shape)))
+            fh.write("uint64_t %s(Proxy* self%s);\n" % (sym, args))
+        fh.write("}\n\n")
+
+        fixup_rows = []
+        for idx, n in enumerate(names):
+            for s in ifaces[n]["slots"]:
+                key = (s["owner"], s["name"])
+                if s["slot"] >= 3 and key in FIXUP_SLOTS:
+                    fixup_rows.append((idx, s["slot"], FIXUP_SLOTS[key][0], n,
+                                       s["name"]))
+        fixup_rows.sort()
+        fh.write("/* Every (interface, slot) the fixups claim.  The tests walk this\n"
+                 "   and assert vkd3d_thunk_vtable(iface)[slot] really is the fixup\n"
+                 "   symbol, so an inherited slot cannot be left generic. */\n")
+        fh.write("struct VkdFixupSlot { uint32_t iface, slot, kind; };\n")
+        fh.write("static const uint32_t kVkdFixupSlotCount = %d;\n" % len(fixup_rows))
+        fh.write("static const VkdFixupSlot kVkdFixupSlots[] = {\n")
+        for i, sl, kind, n, m in fixup_rows:
+            fh.write("    { VKD3D_IFACE_%s, %d, %s }, /* %s::%s */\n"
+                     % (n.upper(), sl, kind, n, m))
+        fh.write("};\n\n")
+
         # ---- per-slot flags --------------------------------------------
         fh.write("""/* Per-slot record of what a slot's parameters need AND whether the generated
    stub handles it.  MARSHALLED means the guest stub wraps/unwraps every
@@ -982,6 +1241,7 @@ enum VkdPumpKind : uint32_t {
 #define VKD3D_SLOT_AGG_RETURN   512u  /* explicit __ret pointer, returned back */
 #define VKD3D_SLOT_BYVAL_AGG    1024u /* by-value aggregate of <= 8 bytes */
 #define VKD3D_SLOT_PUMP         2048u /* host-side override: the fence/event pump */
+#define VKD3D_SLOT_FIXUP        4096u /* guest-side override: the struct fixups */
 
 /* Bits that mean "this slot carries an interface pointer". */
 #define VKD3D_SLOT_IFACE_PTRS \\
@@ -1006,13 +1266,27 @@ enum VkdPumpKind : uint32_t {
    property every OUT parameter here already depends on -- so warning about it
    would be noise, not a finding.  dxvk reports its equivalent because the
    correctness of GetDecoderBuffer's buffer had never been established there.
-   STRUCT_IFACE is reported: the struct passes by pointer with no repacking, so
-   the interface pointers INSIDE it are still guest proxies.  REFUSED means the
-   generator could not marshal the slot at all. */
+   STRUCT_IFACE is reported unless a FIXUP claims the slot.  The struct passes
+   by pointer with no repacking, so the interface pointers INSIDE it are still
+   guest proxies -- unless the slot is served by a hand-written fixup from
+   runtime/vkd3d_struct_fixups.cpp, which copies the aggregate and rewrites
+   them.  Those slots keep the STRUCT_IFACE bit (they DO carry such a struct,
+   and the inventory counts them) and gain HAND | FIXUP, so this predicate goes
+   quiet for exactly them and stays loud for the residue -- CreateStateObject,
+   AddToStateObject and the DRED breadcrumb output.
+
+   The second test is against FIXUP and NOT against HANDLED, which would be the
+   easy mistake: CreateStateObject's generated stub marshals its riid-driven
+   out-parameter and so carries MARSHALLED, but nothing whatsoever translates
+   the D3D12_STATE_OBJECT_DESC it also takes.  Only a fixup does that.
+
+   REFUSED means the generator could not marshal the slot at all. */
 static inline int vkd3d_slot_untranslated(uint16_t f) {
     if ((f & VKD3D_SLOT_IFACE_PTRS) && !(f & VKD3D_SLOT_HANDLED))
         return 1;
-    return (f & (VKD3D_SLOT_REFUSED | VKD3D_SLOT_STRUCT_IFACE)) ? 1 : 0;
+    if ((f & VKD3D_SLOT_STRUCT_IFACE) && !(f & VKD3D_SLOT_FIXUP))
+        return 1;
+    return (f & VKD3D_SLOT_REFUSED) ? 1 : 0;
 }
 
 """)
@@ -1022,7 +1296,23 @@ static inline int vkd3d_slot_untranslated(uint16_t f) {
                 counts["total"] += 1
                 f, plan = classify(iface_names, struct_iface, n, s)
                 hand = hand_written(n, s)
-                if hand:
+                fixup = fixup_of(s) if s["slot"] >= 3 else None
+                if fixup:
+                    # A struct fixup DOES translate everything the classifier
+                    # found, so it keeps the interface-pointer bits (the riid
+                    # dance is part of the hand-written stub) and the
+                    # STRUCT_IFACE bit -- which is what it is there for -- and
+                    # adds HAND | FIXUP so vkd3d_slot_untranslated() goes quiet.
+                    f = (f & (FLAG_AGG_RETURN | FLAG_BYVAL_AGG | FLAG_STRUCT_IFACE |
+                              FLAG_IN_IFACE | FLAG_OUT_IFACE | FLAG_IFACE_ARRAY |
+                              FLAG_VOID_OUT)) | FLAG_HAND | FLAG_FIXUP
+                    counts["hand"] += 1
+                    counts["fixup"] += 1
+                    counts["struct"] += 1
+                    counts["struct_fixed"] += 1
+                    for _, b in plan["struct"]:
+                        inventory.append((n, s["slot"], s["name"], b))
+                elif hand:
                     # The float stubs unwrap nothing (no interface parameters in
                     # any of the three shapes) but record what they carry.
                     f = (f & (FLAG_AGG_RETURN | FLAG_BYVAL_AGG)) | FLAG_HAND
@@ -1036,6 +1326,7 @@ static inline int vkd3d_slot_untranslated(uint16_t f) {
                         counts["raw"] += 1
                     if f & FLAG_STRUCT_IFACE:
                         counts["struct"] += 1
+                        counts["struct_left"] += 1
                         for _, b in plan["struct"]:
                             inventory.append((n, s["slot"], s["name"], b))
                     if f & FLAG_REFUSED:
@@ -1330,6 +1621,18 @@ def emit_guest(ifaces, names, out, struct_iface):
         fh.write("#endif\n")
         fh.write("    return abi == VKD3D_ABI_SYSV ? kSysv[iface] : nullptr;\n}\n\n")
 
+        fh.write("""/* The struct-fixup symbols, indexed by VkdFixupKind.  Declared in
+   vkd3d_thunk_ids.h and defined in runtime/vkd3d_struct_fixups.cpp; gathered
+   here because this is the only file that already names all of them, and the
+   tests walk kVkdFixupSlots[] against it to prove every inheriting interface's
+   target[] entry really is the fixup and not a generic worker. */
+""")
+        fh.write("VKD3D_THUNK_VTBL const void* kVkdFixupTargets[VKD3D_FIXUP_COUNT] = {\n")
+        for kind in FIXUP_KIND_ORDER:
+            sym = [v[1] for v in FIXUP_SLOTS.values() if v[0] == kind][0]
+            fh.write("    (const void*) %s, /* %s */\n" % (sym, kind))
+        fh.write("};\n\n")
+
         fh.write('extern "C" uint32_t vkd3d_thunk_abi_available(void) {\n')
         fh.write("#if VKD3D_HAVE_MS_ABI\n    return (1u << VKD3D_ABI_SYSV) | (1u << VKD3D_ABI_MS);\n")
         fh.write("#else\n    return 1u << VKD3D_ABI_SYSV;\n#endif\n}\n")
@@ -1520,6 +1823,10 @@ def emit_counts(out, names, total, stubs, fwd, counts, fcount, inventory):
         fh.write("VKD3D_N_FLOATSLOTS=%d\n" % sum(fcount.values()))
         fh.write("VKD3D_N_FLOATSHAPES=%d\n" % len(FLOAT_SHAPE_ORDER))
         fh.write("VKD3D_N_STRUCTIFACE_ENTRIES=%d\n" % len(inventory))
+        fh.write("VKD3D_N_FIXUP=%d\n" % counts["fixup"])
+        fh.write("VKD3D_N_FIXUP_KINDS=%d\n" % len(FIXUP_KIND_ORDER))
+        fh.write("VKD3D_N_STRUCTIFACE_FIXED=%d\n" % counts["struct_fixed"])
+        fh.write("VKD3D_N_STRUCTIFACE_LEFT=%d\n" % counts["struct_left"])
     return path
 
 
@@ -1539,15 +1846,16 @@ def main():
     iface_names = set(names)
 
     struct_iface, n_aggs = iface_bearing_structs(args.idl_gen, iface_names)
-    fslot, fcount, pslot, pcount = check_invariants(ifaces, names, struct_iface)
+    fslot, fcount, pslot, pcount, xslot, xcount = check_invariants(
+        ifaces, names, struct_iface)
 
-    names, counts, inventory = emit_ids(ifaces, args.out, fslot, pslot,
+    names, counts, inventory = emit_ids(ifaces, args.out, fslot, pslot, xslot,
                                         struct_iface, iface_names)
     host = emit_host(ifaces, names, args.out)
     guest, stubs, fwd = emit_guest(ifaces, names, args.out, struct_iface)
 
     total = sum(len(ifaces[n]["slots"]) for n in names)
-    hand_float = counts["hand"] - 3 * len(names)
+    hand_float = counts["hand"] - 3 * len(names) - counts["fixup"]
     cnt = emit_counts(args.out, names, total, stubs, fwd, counts, fcount,
                       inventory)
 
@@ -1555,8 +1863,9 @@ def main():
     print("vtable slots         : %d" % total)
     print("  SysV worker stubs  : %d" % stubs)
     print("  ms_abi forwarders  : %d (x86-64 only)" % fwd)
-    print("  hand-written       : %d (%d IUnknown + %d float-class)"
-          % (counts["hand"], 3 * len(names), hand_float))
+    print("  hand-written       : %d (%d IUnknown + %d float-class + %d struct "
+          "fixup)" % (counts["hand"], 3 * len(names), hand_float,
+                      counts["fixup"]))
     print("  float-class shapes : %d across %d vtable slots"
           % (len(FLOAT_SHAPE_ORDER), sum(fcount.values())))
     for shape in FLOAT_SHAPE_ORDER:
@@ -1587,6 +1896,20 @@ def main():
     print("host slot overrides  : %d (fence/event pump)" % counts["pump"])
     for kind in PUMP_KIND_ORDER[1:]:
         print("      %-30s slot %-3d x%d" % (kind, pslot[kind], pcount[kind]))
+    print("guest slot overrides : %d (struct fixups, %d shapes)"
+          % (counts["fixup"], len(FIXUP_KIND_ORDER)))
+    for kind in FIXUP_KIND_ORDER:
+        print("      %-44s slot %-3d x%d" % (kind, xslot[kind], xcount[kind]))
+    print("struct-with-interface reconciliation:")
+    print("  slots carrying one  : %d" % counts["struct"])
+    print("    fixed here        : %d (runtime/vkd3d_struct_fixups.cpp)"
+          % counts["struct_fixed"])
+    print("    left + STRICT     : %d" % counts["struct_left"])
+    for (owner, meth) in sorted(LEFT_STRUCT_SLOTS):
+        n_left = sum(1 for i, s, m, _ in inventory if m == meth)
+        print("      %-28s %-28s x%d" % (owner, meth, n_left))
+    print("    unaccounted       : %d"
+          % (counts["struct"] - counts["struct_fixed"] - counts["struct_left"]))
     print("struct-with-interface inventory (%d aggregates scanned in %s):"
           % (n_aggs, os.path.relpath(args.idl_gen)))
     for iface, slot, meth, b in sorted(inventory):

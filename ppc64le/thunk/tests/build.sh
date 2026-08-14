@@ -33,7 +33,12 @@ OUT=$ROOT/build
 mkdir -p "$OUT"
 
 CXX=${CXX:-g++}
-INC="-I$ROOT/generated -I$ROOT/runtime"
+# runtime/vkd3d_struct_fixups.cpp is the ONE runtime file that sees the d3d12
+# types, so the widl headers (and vkd3d_windows.h, which they need first) are on
+# the include path.  Nothing else in generated/ or runtime/ includes them, and
+# the "exported symbols" and "boundary is three functions" checks below would
+# notice if that changed.
+INC="-I$ROOT/generated -I$ROOT/runtime -I$ROOT/../idl/gen -I$ROOT/../../include"
 WARN="-Wall -Wextra -Wno-unused-parameter"
 STD="-std=c++17 -fvisibility=hidden"
 ARCH=$(uname -m)
@@ -46,7 +51,7 @@ fail=0
 step() { printf '\n=== %s\n' "$*"; }
 check() { if [ "$1" -eq 0 ]; then echo "  ok"; else echo "  FAILED"; fail=1; fi; }
 
-GUEST_SRC="generated/vkd3d_thunk_guest.cpp runtime/vkd3d_proxy.cpp"
+GUEST_SRC="generated/vkd3d_thunk_guest.cpp runtime/vkd3d_proxy.cpp runtime/vkd3d_struct_fixups.cpp"
 HOST_SRC="generated/vkd3d_thunk_host.cpp runtime/vkd3d_thunk_host_rt.cpp"
 
 # ---------------------------------------------------------------- generate
@@ -84,6 +89,25 @@ echo "  vtbl_sysv/vtbl_ms/target  $VT_S/$VT_M/$VT_T (want $VKD3D_N_IFACES each)"
 [ "$WORK" = "$VKD3D_N_WORKERS" ] && [ "$MSFW" = "$VKD3D_N_FORWARDERS" ] && \
 [ "$VT_S" = "$VKD3D_N_IFACES" ] && [ "$VT_M" = "$VKD3D_N_IFACES" ] && \
 [ "$VT_T" = "$VKD3D_N_IFACES" ]
+check $?
+
+step "guest -O2: the struct fixups are linked in, hidden, and wired"
+# One extern symbol per fixup shape, all hidden: they are reached only through
+# the generated vtables inside this library.  The shape symbols are
+# vkd3d_fixup_<Method> with no underscore in the tail, which is what separates
+# them from the four vkd3d_fixup_*_count diagnostic hooks.
+# vkd3d_thunk_vtable()[slot] really pointing at them is what the loopback test
+# proves; this proves the symbols survived -O2 at all.
+FIXSYM=$(nm "$OUT/libvkd3d_thunk_guest_O2.so" 2>/dev/null | \
+           grep -cE ' [tT] vkd3d_fixup_[A-Za-z]+$')
+FIXTGT=$(nm "$OUT/libvkd3d_thunk_guest_O2.so" 2>/dev/null | \
+           grep -cE ' [dDrR] kVkdFixupTargets$')
+FIXEXP=$(nm -D --defined-only "$OUT/libvkd3d_thunk_guest_O2.so" 2>/dev/null | \
+           grep -cE ' T vkd3d_fixup_')
+echo "  fixup shape symbols $FIXSYM (want $VKD3D_N_FIXUP_KINDS)"
+echo "  kVkdFixupTargets $FIXTGT (want 1), exported fixups $FIXEXP (want 0)"
+[ "$FIXSYM" = "$VKD3D_N_FIXUP_KINDS" ] && [ "$FIXTGT" = "1" ] && \
+[ "$FIXEXP" = "0" ]
 check $?
 
 if [ "$ARCH" = "x86_64" ]; then
@@ -202,29 +226,46 @@ grep -h 'aborting because' "$OUT/struct_strict.log" | sed 's/^/    /'
 check $?
 
 step "the untranslated-slot inventory is exactly the documented residue"
-python3 - <<'EOF'
-import re, sys
+FIXED=$VKD3D_N_STRUCTIFACE_FIXED LEFT=$VKD3D_N_STRUCTIFACE_LEFT python3 - <<'EOF'
+import os, re, sys
 h = open('generated/vkd3d_thunk_ids.h').read()
 # Same predicate as vkd3d_slot_untranslated() in the generated header.
 IFACE_PTRS = 1 | 2 | 4 | 8
 HANDLED    = 16 | 32
-REPORTED   = 128 | 256          # refused, struct-with-interface
+STRUCT     = 256
+REFUSED    = 128
+FIXUP      = 4096
+REPORTED   = REFUSED | STRUCT
 names = re.findall(r'VKD3D_IFACE_(\w+) = \d+,', h)
-bad, tot, kinds = [], 0, {}
+bad, tot, kinds, fixed = [], 0, {}, 0
 for m in re.finditer(r'kVkdSlotFlags_(\w+)\[\] = \{([^}]*)\}', h):
     for slot, f in enumerate(int(x) for x in m.group(2).split(',')):
         tot += 1
-        if ((f & IFACE_PTRS) and not (f & HANDLED)) or (f & REPORTED):
+        if f & FIXUP:
+            fixed += 1
+        if ((f & IFACE_PTRS) and not (f & HANDLED)) or \
+           ((f & STRUCT) and not (f & FIXUP)) or (f & REFUSED):
             bad.append((m.group(1), slot, f))
-            k = 'struct-iface' if (f & 256) else ('refused' if (f & 128) else 'other')
+            k = 'struct-iface' if (f & STRUCT) else \
+                ('refused' if (f & REFUSED) else 'other')
             kinds[k] = kinds.get(k, 0) + 1
 print("  %d of %d slots would be reported by vkd3d_slot_untranslated()" % (len(bad), tot))
 for k in sorted(kinds):
     print("    %-14s %d" % (k, kinds[k]))
+print("    %-14s %d (struct fixups, no longer reported)" % ('fixed', fixed))
 # Every one of them must be a struct-with-interface slot or a refused slot;
 # nothing may be reported for any other reason, and nothing carrying an
-# interface pointer may be unhandled.
+# interface pointer may be unhandled.  And the residue plus the fixed slots
+# must be the whole struct-with-interface inventory.
 ok = all((f & REPORTED) for _, _, f in bad)
+want_fixed = int(os.environ['FIXED'])
+want_left  = int(os.environ['LEFT'])
+if fixed != want_fixed:
+    print("    MISMATCH: %d fixed slots, the generator says %d" % (fixed, want_fixed))
+if kinds.get('struct-iface', 0) != want_left:
+    print("    MISMATCH: %d struct slots left, the generator says %d"
+          % (kinds.get('struct-iface', 0), want_left))
+ok = ok and fixed == want_fixed and kinds.get('struct-iface', 0) == want_left
 sys.exit(0 if ok and kinds.get('other', 0) == 0 else 1)
 EOF
 check $?
@@ -275,7 +316,9 @@ echo "  interfaces $VKD3D_N_IFACES, slots $VKD3D_N_SLOTS, workers $VKD3D_N_WORKE
 echo "  forwarders $VKD3D_N_FORWARDERS, hand-written $VKD3D_N_HAND,"
 echo "  marshalled $VKD3D_N_MARSHALLED, aggregate returns $VKD3D_N_AGGRET,"
 echo "  by-value aggregates $VKD3D_N_BYVALAGG, float slots $VKD3D_N_FLOATSLOTS"
-echo "  in $VKD3D_N_FLOATSHAPES shapes, struct-iface $VKD3D_N_STRUCTIFACE,"
+echo "  in $VKD3D_N_FLOATSHAPES shapes, struct-iface $VKD3D_N_STRUCTIFACE"
+echo "  ($VKD3D_N_STRUCTIFACE_FIXED fixed by runtime/vkd3d_struct_fixups.cpp in"
+echo "  $VKD3D_N_FIXUP_KINDS shapes, $VKD3D_N_STRUCTIFACE_LEFT left + STRICT-flagged),"
 echo "  refused $VKD3D_N_REFUSED, pump overrides $VKD3D_N_PUMP"
 grep -h 'passed,' "$OUT"/loopback_O2.log "$OUT"/msabi_O2.log 2>/dev/null | sed 's/^/  /'
 

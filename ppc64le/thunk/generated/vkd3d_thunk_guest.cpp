@@ -912,32 +912,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device_9_CreateCommandAllocator(Proxy* self, uin
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -1180,8 +1154,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device_target[44] = {
     (const void*) ID3D12Device_7_GetNodeCount,
     (const void*) ID3D12Device_8_CreateCommandQueue,
     (const void*) ID3D12Device_9_CreateCommandAllocator,
-    (const void*) ID3D12Device_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device_12_CreateCommandList,
     (const void*) ID3D12Device_13_CheckFeatureSupport,
     (const void*) ID3D12Device_14_CreateDescriptorHeap,
@@ -1226,8 +1200,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device_vtbl_sysv[44] = {
     (const void*) ID3D12Device_7_GetNodeCount,
     (const void*) ID3D12Device_8_CreateCommandQueue,
     (const void*) ID3D12Device_9_CreateCommandAllocator,
-    (const void*) ID3D12Device_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device_12_CreateCommandList,
     (const void*) ID3D12Device_13_CheckFeatureSupport,
     (const void*) ID3D12Device_14_CreateDescriptorHeap,
@@ -1488,32 +1462,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device1_9_CreateCommandAllocator(Proxy* self, ui
     uint64_t h2 = 0;
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE1, 9, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device1_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device1::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE1, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device1_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device1::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE1, 11, self->host, a);
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
@@ -1787,8 +1735,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device1_target[47] = {
     (const void*) ID3D12Device1_7_GetNodeCount,
     (const void*) ID3D12Device1_8_CreateCommandQueue,
     (const void*) ID3D12Device1_9_CreateCommandAllocator,
-    (const void*) ID3D12Device1_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device1_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device1_12_CreateCommandList,
     (const void*) ID3D12Device1_13_CheckFeatureSupport,
     (const void*) ID3D12Device1_14_CreateDescriptorHeap,
@@ -1836,8 +1784,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device1_vtbl_sysv[47] = {
     (const void*) ID3D12Device1_7_GetNodeCount,
     (const void*) ID3D12Device1_8_CreateCommandQueue,
     (const void*) ID3D12Device1_9_CreateCommandAllocator,
-    (const void*) ID3D12Device1_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device1_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device1_12_CreateCommandList,
     (const void*) ID3D12Device1_13_CheckFeatureSupport,
     (const void*) ID3D12Device1_14_CreateDescriptorHeap,
@@ -2116,32 +2064,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device10_9_CreateCommandAllocator(Proxy* self, u
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device10_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device10::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE10, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device10_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device10::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE10, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device10_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -2398,19 +2320,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device10_46_SetResidencyPriority(Proxy* self, ui
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, p1, a2};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE10, 46, self->host, a);
     vkd3d_ifarray_free(&s1);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device10_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device10::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE10, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12Device10_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
@@ -2708,8 +2617,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device10_target[79] = {
     (const void*) ID3D12Device10_7_GetNodeCount,
     (const void*) ID3D12Device10_8_CreateCommandQueue,
     (const void*) ID3D12Device10_9_CreateCommandAllocator,
-    (const void*) ID3D12Device10_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device10_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device10_12_CreateCommandList,
     (const void*) ID3D12Device10_13_CheckFeatureSupport,
     (const void*) ID3D12Device10_14_CreateDescriptorHeap,
@@ -2745,7 +2654,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device10_target[79] = {
     (const void*) ID3D12Device10_44_CreatePipelineLibrary,
     (const void*) ID3D12Device10_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device10_46_SetResidencyPriority,
-    (const void*) ID3D12Device10_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device10_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device10_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device10_50_EnqueueMakeResident,
@@ -2789,8 +2698,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device10_vtbl_sysv[79] = {
     (const void*) ID3D12Device10_7_GetNodeCount,
     (const void*) ID3D12Device10_8_CreateCommandQueue,
     (const void*) ID3D12Device10_9_CreateCommandAllocator,
-    (const void*) ID3D12Device10_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device10_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device10_12_CreateCommandList,
     (const void*) ID3D12Device10_13_CheckFeatureSupport,
     (const void*) ID3D12Device10_14_CreateDescriptorHeap,
@@ -2826,7 +2735,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device10_vtbl_sysv[79] = {
     (const void*) ID3D12Device10_44_CreatePipelineLibrary,
     (const void*) ID3D12Device10_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device10_46_SetResidencyPriority,
-    (const void*) ID3D12Device10_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device10_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device10_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device10_50_EnqueueMakeResident,
@@ -3231,32 +3140,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device11_9_CreateCommandAllocator(Proxy* self, u
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device11_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device11::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE11, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device11_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device11::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE11, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device11_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -3513,19 +3396,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device11_46_SetResidencyPriority(Proxy* self, ui
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, p1, a2};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE11, 46, self->host, a);
     vkd3d_ifarray_free(&s1);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device11_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device11::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE11, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12Device11_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
@@ -3827,8 +3697,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device11_target[80] = {
     (const void*) ID3D12Device11_7_GetNodeCount,
     (const void*) ID3D12Device11_8_CreateCommandQueue,
     (const void*) ID3D12Device11_9_CreateCommandAllocator,
-    (const void*) ID3D12Device11_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device11_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device11_12_CreateCommandList,
     (const void*) ID3D12Device11_13_CheckFeatureSupport,
     (const void*) ID3D12Device11_14_CreateDescriptorHeap,
@@ -3864,7 +3734,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device11_target[80] = {
     (const void*) ID3D12Device11_44_CreatePipelineLibrary,
     (const void*) ID3D12Device11_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device11_46_SetResidencyPriority,
-    (const void*) ID3D12Device11_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device11_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device11_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device11_50_EnqueueMakeResident,
@@ -3909,8 +3779,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device11_vtbl_sysv[80] = {
     (const void*) ID3D12Device11_7_GetNodeCount,
     (const void*) ID3D12Device11_8_CreateCommandQueue,
     (const void*) ID3D12Device11_9_CreateCommandAllocator,
-    (const void*) ID3D12Device11_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device11_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device11_12_CreateCommandList,
     (const void*) ID3D12Device11_13_CheckFeatureSupport,
     (const void*) ID3D12Device11_14_CreateDescriptorHeap,
@@ -3946,7 +3816,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device11_vtbl_sysv[80] = {
     (const void*) ID3D12Device11_44_CreatePipelineLibrary,
     (const void*) ID3D12Device11_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device11_46_SetResidencyPriority,
-    (const void*) ID3D12Device11_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device11_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device11_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device11_50_EnqueueMakeResident,
@@ -4356,32 +4226,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device12_9_CreateCommandAllocator(Proxy* self, u
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device12_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device12::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE12, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device12_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device12::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE12, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device12_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -4638,19 +4482,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device12_46_SetResidencyPriority(Proxy* self, ui
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, p1, a2};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE12, 46, self->host, a);
     vkd3d_ifarray_free(&s1);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device12_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device12::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE12, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12Device12_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
@@ -4956,8 +4787,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device12_target[81] = {
     (const void*) ID3D12Device12_7_GetNodeCount,
     (const void*) ID3D12Device12_8_CreateCommandQueue,
     (const void*) ID3D12Device12_9_CreateCommandAllocator,
-    (const void*) ID3D12Device12_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device12_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device12_12_CreateCommandList,
     (const void*) ID3D12Device12_13_CheckFeatureSupport,
     (const void*) ID3D12Device12_14_CreateDescriptorHeap,
@@ -4993,7 +4824,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device12_target[81] = {
     (const void*) ID3D12Device12_44_CreatePipelineLibrary,
     (const void*) ID3D12Device12_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device12_46_SetResidencyPriority,
-    (const void*) ID3D12Device12_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device12_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device12_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device12_50_EnqueueMakeResident,
@@ -5039,8 +4870,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device12_vtbl_sysv[81] = {
     (const void*) ID3D12Device12_7_GetNodeCount,
     (const void*) ID3D12Device12_8_CreateCommandQueue,
     (const void*) ID3D12Device12_9_CreateCommandAllocator,
-    (const void*) ID3D12Device12_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device12_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device12_12_CreateCommandList,
     (const void*) ID3D12Device12_13_CheckFeatureSupport,
     (const void*) ID3D12Device12_14_CreateDescriptorHeap,
@@ -5076,7 +4907,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device12_vtbl_sysv[81] = {
     (const void*) ID3D12Device12_44_CreatePipelineLibrary,
     (const void*) ID3D12Device12_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device12_46_SetResidencyPriority,
-    (const void*) ID3D12Device12_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device12_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device12_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device12_50_EnqueueMakeResident,
@@ -5492,32 +5323,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device13_9_CreateCommandAllocator(Proxy* self, u
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device13_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device13::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE13, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device13_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device13::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE13, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device13_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -5774,19 +5579,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device13_46_SetResidencyPriority(Proxy* self, ui
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, p1, a2};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE13, 46, self->host, a);
     vkd3d_ifarray_free(&s1);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device13_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device13::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE13, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12Device13_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
@@ -6104,8 +5896,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device13_target[82] = {
     (const void*) ID3D12Device13_7_GetNodeCount,
     (const void*) ID3D12Device13_8_CreateCommandQueue,
     (const void*) ID3D12Device13_9_CreateCommandAllocator,
-    (const void*) ID3D12Device13_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device13_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device13_12_CreateCommandList,
     (const void*) ID3D12Device13_13_CheckFeatureSupport,
     (const void*) ID3D12Device13_14_CreateDescriptorHeap,
@@ -6141,7 +5933,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device13_target[82] = {
     (const void*) ID3D12Device13_44_CreatePipelineLibrary,
     (const void*) ID3D12Device13_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device13_46_SetResidencyPriority,
-    (const void*) ID3D12Device13_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device13_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device13_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device13_50_EnqueueMakeResident,
@@ -6188,8 +5980,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device13_vtbl_sysv[82] = {
     (const void*) ID3D12Device13_7_GetNodeCount,
     (const void*) ID3D12Device13_8_CreateCommandQueue,
     (const void*) ID3D12Device13_9_CreateCommandAllocator,
-    (const void*) ID3D12Device13_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device13_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device13_12_CreateCommandList,
     (const void*) ID3D12Device13_13_CheckFeatureSupport,
     (const void*) ID3D12Device13_14_CreateDescriptorHeap,
@@ -6225,7 +6017,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device13_vtbl_sysv[82] = {
     (const void*) ID3D12Device13_44_CreatePipelineLibrary,
     (const void*) ID3D12Device13_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device13_46_SetResidencyPriority,
-    (const void*) ID3D12Device13_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device13_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device13_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device13_50_EnqueueMakeResident,
@@ -6646,32 +6438,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device14_9_CreateCommandAllocator(Proxy* self, u
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device14_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device14::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE14, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device14_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device14::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE14, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device14_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -6928,19 +6694,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device14_46_SetResidencyPriority(Proxy* self, ui
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, p1, a2};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE14, 46, self->host, a);
     vkd3d_ifarray_free(&s1);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device14_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device14::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE14, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12Device14_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
@@ -7270,8 +7023,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device14_target[83] = {
     (const void*) ID3D12Device14_7_GetNodeCount,
     (const void*) ID3D12Device14_8_CreateCommandQueue,
     (const void*) ID3D12Device14_9_CreateCommandAllocator,
-    (const void*) ID3D12Device14_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device14_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device14_12_CreateCommandList,
     (const void*) ID3D12Device14_13_CheckFeatureSupport,
     (const void*) ID3D12Device14_14_CreateDescriptorHeap,
@@ -7307,7 +7060,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device14_target[83] = {
     (const void*) ID3D12Device14_44_CreatePipelineLibrary,
     (const void*) ID3D12Device14_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device14_46_SetResidencyPriority,
-    (const void*) ID3D12Device14_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device14_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device14_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device14_50_EnqueueMakeResident,
@@ -7355,8 +7108,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device14_vtbl_sysv[83] = {
     (const void*) ID3D12Device14_7_GetNodeCount,
     (const void*) ID3D12Device14_8_CreateCommandQueue,
     (const void*) ID3D12Device14_9_CreateCommandAllocator,
-    (const void*) ID3D12Device14_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device14_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device14_12_CreateCommandList,
     (const void*) ID3D12Device14_13_CheckFeatureSupport,
     (const void*) ID3D12Device14_14_CreateDescriptorHeap,
@@ -7392,7 +7145,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device14_vtbl_sysv[83] = {
     (const void*) ID3D12Device14_44_CreatePipelineLibrary,
     (const void*) ID3D12Device14_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device14_46_SetResidencyPriority,
-    (const void*) ID3D12Device14_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device14_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device14_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device14_50_EnqueueMakeResident,
@@ -7818,32 +7571,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device15_9_CreateCommandAllocator(Proxy* self, u
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device15_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device15::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE15, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device15_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device15::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE15, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device15_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -8100,19 +7827,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device15_46_SetResidencyPriority(Proxy* self, ui
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, p1, a2};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE15, 46, self->host, a);
     vkd3d_ifarray_free(&s1);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device15_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device15::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE15, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12Device15_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
@@ -8500,8 +8214,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device15_target[94] = {
     (const void*) ID3D12Device15_7_GetNodeCount,
     (const void*) ID3D12Device15_8_CreateCommandQueue,
     (const void*) ID3D12Device15_9_CreateCommandAllocator,
-    (const void*) ID3D12Device15_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device15_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device15_12_CreateCommandList,
     (const void*) ID3D12Device15_13_CheckFeatureSupport,
     (const void*) ID3D12Device15_14_CreateDescriptorHeap,
@@ -8537,7 +8251,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device15_target[94] = {
     (const void*) ID3D12Device15_44_CreatePipelineLibrary,
     (const void*) ID3D12Device15_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device15_46_SetResidencyPriority,
-    (const void*) ID3D12Device15_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device15_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device15_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device15_50_EnqueueMakeResident,
@@ -8596,8 +8310,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device15_vtbl_sysv[94] = {
     (const void*) ID3D12Device15_7_GetNodeCount,
     (const void*) ID3D12Device15_8_CreateCommandQueue,
     (const void*) ID3D12Device15_9_CreateCommandAllocator,
-    (const void*) ID3D12Device15_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device15_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device15_12_CreateCommandList,
     (const void*) ID3D12Device15_13_CheckFeatureSupport,
     (const void*) ID3D12Device15_14_CreateDescriptorHeap,
@@ -8633,7 +8347,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device15_vtbl_sysv[94] = {
     (const void*) ID3D12Device15_44_CreatePipelineLibrary,
     (const void*) ID3D12Device15_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device15_46_SetResidencyPriority,
-    (const void*) ID3D12Device15_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device15_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device15_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device15_50_EnqueueMakeResident,
@@ -9114,32 +8828,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device2_9_CreateCommandAllocator(Proxy* self, ui
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device2_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device2::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE2, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device2_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device2::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE2, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device2_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -9398,19 +9086,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device2_46_SetResidencyPriority(Proxy* self, uin
     vkd3d_ifarray_free(&s1);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device2_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device2::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE2, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 
 VKD3D_THUNK_VTBL const void* kID3D12Device2_target[48] = {
     (const void*) vkd3d_proxy_qi,
@@ -9423,8 +9098,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device2_target[48] = {
     (const void*) ID3D12Device2_7_GetNodeCount,
     (const void*) ID3D12Device2_8_CreateCommandQueue,
     (const void*) ID3D12Device2_9_CreateCommandAllocator,
-    (const void*) ID3D12Device2_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device2_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device2_12_CreateCommandList,
     (const void*) ID3D12Device2_13_CheckFeatureSupport,
     (const void*) ID3D12Device2_14_CreateDescriptorHeap,
@@ -9460,7 +9135,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device2_target[48] = {
     (const void*) ID3D12Device2_44_CreatePipelineLibrary,
     (const void*) ID3D12Device2_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device2_46_SetResidencyPriority,
-    (const void*) ID3D12Device2_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
 };
 VKD3D_THUNK_VTBL const void* kID3D12Device2_vtbl_sysv[48] = {
     (const void*) vkd3d_proxy_qi,
@@ -9473,8 +9148,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device2_vtbl_sysv[48] = {
     (const void*) ID3D12Device2_7_GetNodeCount,
     (const void*) ID3D12Device2_8_CreateCommandQueue,
     (const void*) ID3D12Device2_9_CreateCommandAllocator,
-    (const void*) ID3D12Device2_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device2_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device2_12_CreateCommandList,
     (const void*) ID3D12Device2_13_CheckFeatureSupport,
     (const void*) ID3D12Device2_14_CreateDescriptorHeap,
@@ -9510,7 +9185,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device2_vtbl_sysv[48] = {
     (const void*) ID3D12Device2_44_CreatePipelineLibrary,
     (const void*) ID3D12Device2_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device2_46_SetResidencyPriority,
-    (const void*) ID3D12Device2_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
 };
 #if VKD3D_HAVE_MS_ABI
 VKD3D_THUNK_STUB VKD3D_MS_ABI int32_t ID3D12Device2_0_ms(Proxy* self, const void* riid, void** ppv) {
@@ -9755,32 +9430,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device3_9_CreateCommandAllocator(Proxy* self, ui
     uint64_t h2 = 0;
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE3, 9, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device3_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device3::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE3, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device3_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device3::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE3, 11, self->host, a);
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
@@ -10042,19 +9691,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device3_46_SetResidencyPriority(Proxy* self, uin
     vkd3d_ifarray_free(&s1);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device3_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device3::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE3, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device3_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
     uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
     if (w2 == VKD3D_IFACE_INVALID) {
@@ -10099,8 +9735,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device3_target[51] = {
     (const void*) ID3D12Device3_7_GetNodeCount,
     (const void*) ID3D12Device3_8_CreateCommandQueue,
     (const void*) ID3D12Device3_9_CreateCommandAllocator,
-    (const void*) ID3D12Device3_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device3_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device3_12_CreateCommandList,
     (const void*) ID3D12Device3_13_CheckFeatureSupport,
     (const void*) ID3D12Device3_14_CreateDescriptorHeap,
@@ -10136,7 +9772,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device3_target[51] = {
     (const void*) ID3D12Device3_44_CreatePipelineLibrary,
     (const void*) ID3D12Device3_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device3_46_SetResidencyPriority,
-    (const void*) ID3D12Device3_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device3_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device3_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device3_50_EnqueueMakeResident,
@@ -10152,8 +9788,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device3_vtbl_sysv[51] = {
     (const void*) ID3D12Device3_7_GetNodeCount,
     (const void*) ID3D12Device3_8_CreateCommandQueue,
     (const void*) ID3D12Device3_9_CreateCommandAllocator,
-    (const void*) ID3D12Device3_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device3_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device3_12_CreateCommandList,
     (const void*) ID3D12Device3_13_CheckFeatureSupport,
     (const void*) ID3D12Device3_14_CreateDescriptorHeap,
@@ -10189,7 +9825,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device3_vtbl_sysv[51] = {
     (const void*) ID3D12Device3_44_CreatePipelineLibrary,
     (const void*) ID3D12Device3_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device3_46_SetResidencyPriority,
-    (const void*) ID3D12Device3_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device3_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device3_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device3_50_EnqueueMakeResident,
@@ -10452,32 +10088,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device4_9_CreateCommandAllocator(Proxy* self, ui
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device4_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device4::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE4, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device4_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device4::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE4, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device4_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -10736,19 +10346,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device4_46_SetResidencyPriority(Proxy* self, uin
     vkd3d_ifarray_free(&s1);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device4_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device4::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE4, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device4_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
     uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
     if (w2 == VKD3D_IFACE_INVALID) {
@@ -10857,8 +10454,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device4_target[57] = {
     (const void*) ID3D12Device4_7_GetNodeCount,
     (const void*) ID3D12Device4_8_CreateCommandQueue,
     (const void*) ID3D12Device4_9_CreateCommandAllocator,
-    (const void*) ID3D12Device4_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device4_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device4_12_CreateCommandList,
     (const void*) ID3D12Device4_13_CheckFeatureSupport,
     (const void*) ID3D12Device4_14_CreateDescriptorHeap,
@@ -10894,7 +10491,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device4_target[57] = {
     (const void*) ID3D12Device4_44_CreatePipelineLibrary,
     (const void*) ID3D12Device4_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device4_46_SetResidencyPriority,
-    (const void*) ID3D12Device4_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device4_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device4_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device4_50_EnqueueMakeResident,
@@ -10916,8 +10513,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device4_vtbl_sysv[57] = {
     (const void*) ID3D12Device4_7_GetNodeCount,
     (const void*) ID3D12Device4_8_CreateCommandQueue,
     (const void*) ID3D12Device4_9_CreateCommandAllocator,
-    (const void*) ID3D12Device4_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device4_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device4_12_CreateCommandList,
     (const void*) ID3D12Device4_13_CheckFeatureSupport,
     (const void*) ID3D12Device4_14_CreateDescriptorHeap,
@@ -10953,7 +10550,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device4_vtbl_sysv[57] = {
     (const void*) ID3D12Device4_44_CreatePipelineLibrary,
     (const void*) ID3D12Device4_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device4_46_SetResidencyPriority,
-    (const void*) ID3D12Device4_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device4_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device4_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device4_50_EnqueueMakeResident,
@@ -11247,32 +10844,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device5_9_CreateCommandAllocator(Proxy* self, ui
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device5_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device5::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE5, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device5_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device5::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE5, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device5_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -11531,19 +11102,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device5_46_SetResidencyPriority(Proxy* self, uin
     vkd3d_ifarray_free(&s1);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device5_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device5::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE5, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device5_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
     uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
     if (w2 == VKD3D_IFACE_INVALID) {
@@ -11709,8 +11267,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device5_target[65] = {
     (const void*) ID3D12Device5_7_GetNodeCount,
     (const void*) ID3D12Device5_8_CreateCommandQueue,
     (const void*) ID3D12Device5_9_CreateCommandAllocator,
-    (const void*) ID3D12Device5_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device5_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device5_12_CreateCommandList,
     (const void*) ID3D12Device5_13_CheckFeatureSupport,
     (const void*) ID3D12Device5_14_CreateDescriptorHeap,
@@ -11746,7 +11304,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device5_target[65] = {
     (const void*) ID3D12Device5_44_CreatePipelineLibrary,
     (const void*) ID3D12Device5_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device5_46_SetResidencyPriority,
-    (const void*) ID3D12Device5_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device5_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device5_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device5_50_EnqueueMakeResident,
@@ -11776,8 +11334,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device5_vtbl_sysv[65] = {
     (const void*) ID3D12Device5_7_GetNodeCount,
     (const void*) ID3D12Device5_8_CreateCommandQueue,
     (const void*) ID3D12Device5_9_CreateCommandAllocator,
-    (const void*) ID3D12Device5_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device5_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device5_12_CreateCommandList,
     (const void*) ID3D12Device5_13_CheckFeatureSupport,
     (const void*) ID3D12Device5_14_CreateDescriptorHeap,
@@ -11813,7 +11371,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device5_vtbl_sysv[65] = {
     (const void*) ID3D12Device5_44_CreatePipelineLibrary,
     (const void*) ID3D12Device5_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device5_46_SetResidencyPriority,
-    (const void*) ID3D12Device5_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device5_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device5_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device5_50_EnqueueMakeResident,
@@ -12147,32 +11705,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device6_9_CreateCommandAllocator(Proxy* self, ui
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device6_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device6::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE6, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device6_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device6::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE6, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device6_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -12431,19 +11963,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device6_46_SetResidencyPriority(Proxy* self, uin
     vkd3d_ifarray_free(&s1);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device6_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device6::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE6, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device6_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
     uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
     if (w2 == VKD3D_IFACE_INVALID) {
@@ -12613,8 +12132,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device6_target[66] = {
     (const void*) ID3D12Device6_7_GetNodeCount,
     (const void*) ID3D12Device6_8_CreateCommandQueue,
     (const void*) ID3D12Device6_9_CreateCommandAllocator,
-    (const void*) ID3D12Device6_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device6_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device6_12_CreateCommandList,
     (const void*) ID3D12Device6_13_CheckFeatureSupport,
     (const void*) ID3D12Device6_14_CreateDescriptorHeap,
@@ -12650,7 +12169,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device6_target[66] = {
     (const void*) ID3D12Device6_44_CreatePipelineLibrary,
     (const void*) ID3D12Device6_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device6_46_SetResidencyPriority,
-    (const void*) ID3D12Device6_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device6_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device6_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device6_50_EnqueueMakeResident,
@@ -12681,8 +12200,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device6_vtbl_sysv[66] = {
     (const void*) ID3D12Device6_7_GetNodeCount,
     (const void*) ID3D12Device6_8_CreateCommandQueue,
     (const void*) ID3D12Device6_9_CreateCommandAllocator,
-    (const void*) ID3D12Device6_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device6_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device6_12_CreateCommandList,
     (const void*) ID3D12Device6_13_CheckFeatureSupport,
     (const void*) ID3D12Device6_14_CreateDescriptorHeap,
@@ -12718,7 +12237,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device6_vtbl_sysv[66] = {
     (const void*) ID3D12Device6_44_CreatePipelineLibrary,
     (const void*) ID3D12Device6_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device6_46_SetResidencyPriority,
-    (const void*) ID3D12Device6_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device6_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device6_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device6_50_EnqueueMakeResident,
@@ -13057,32 +12576,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device7_9_CreateCommandAllocator(Proxy* self, ui
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device7_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device7::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE7, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device7_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device7::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE7, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device7_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -13341,19 +12834,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device7_46_SetResidencyPriority(Proxy* self, uin
     vkd3d_ifarray_free(&s1);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device7_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device7::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE7, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device7_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
     uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
     if (w2 == VKD3D_IFACE_INVALID) {
@@ -13548,8 +13028,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device7_target[68] = {
     (const void*) ID3D12Device7_7_GetNodeCount,
     (const void*) ID3D12Device7_8_CreateCommandQueue,
     (const void*) ID3D12Device7_9_CreateCommandAllocator,
-    (const void*) ID3D12Device7_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device7_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device7_12_CreateCommandList,
     (const void*) ID3D12Device7_13_CheckFeatureSupport,
     (const void*) ID3D12Device7_14_CreateDescriptorHeap,
@@ -13585,7 +13065,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device7_target[68] = {
     (const void*) ID3D12Device7_44_CreatePipelineLibrary,
     (const void*) ID3D12Device7_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device7_46_SetResidencyPriority,
-    (const void*) ID3D12Device7_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device7_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device7_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device7_50_EnqueueMakeResident,
@@ -13618,8 +13098,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device7_vtbl_sysv[68] = {
     (const void*) ID3D12Device7_7_GetNodeCount,
     (const void*) ID3D12Device7_8_CreateCommandQueue,
     (const void*) ID3D12Device7_9_CreateCommandAllocator,
-    (const void*) ID3D12Device7_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device7_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device7_12_CreateCommandList,
     (const void*) ID3D12Device7_13_CheckFeatureSupport,
     (const void*) ID3D12Device7_14_CreateDescriptorHeap,
@@ -13655,7 +13135,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device7_vtbl_sysv[68] = {
     (const void*) ID3D12Device7_44_CreatePipelineLibrary,
     (const void*) ID3D12Device7_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device7_46_SetResidencyPriority,
-    (const void*) ID3D12Device7_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device7_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device7_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device7_50_EnqueueMakeResident,
@@ -14004,32 +13484,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device8_9_CreateCommandAllocator(Proxy* self, ui
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device8_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device8::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE8, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device8_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device8::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE8, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device8_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -14288,19 +13742,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device8_46_SetResidencyPriority(Proxy* self, uin
     vkd3d_ifarray_free(&s1);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device8_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device8::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE8, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device8_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
     uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
     if (w2 == VKD3D_IFACE_INVALID) {
@@ -14532,8 +13973,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device8_target[73] = {
     (const void*) ID3D12Device8_7_GetNodeCount,
     (const void*) ID3D12Device8_8_CreateCommandQueue,
     (const void*) ID3D12Device8_9_CreateCommandAllocator,
-    (const void*) ID3D12Device8_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device8_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device8_12_CreateCommandList,
     (const void*) ID3D12Device8_13_CheckFeatureSupport,
     (const void*) ID3D12Device8_14_CreateDescriptorHeap,
@@ -14569,7 +14010,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device8_target[73] = {
     (const void*) ID3D12Device8_44_CreatePipelineLibrary,
     (const void*) ID3D12Device8_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device8_46_SetResidencyPriority,
-    (const void*) ID3D12Device8_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device8_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device8_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device8_50_EnqueueMakeResident,
@@ -14607,8 +14048,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device8_vtbl_sysv[73] = {
     (const void*) ID3D12Device8_7_GetNodeCount,
     (const void*) ID3D12Device8_8_CreateCommandQueue,
     (const void*) ID3D12Device8_9_CreateCommandAllocator,
-    (const void*) ID3D12Device8_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device8_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device8_12_CreateCommandList,
     (const void*) ID3D12Device8_13_CheckFeatureSupport,
     (const void*) ID3D12Device8_14_CreateDescriptorHeap,
@@ -14644,7 +14085,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device8_vtbl_sysv[73] = {
     (const void*) ID3D12Device8_44_CreatePipelineLibrary,
     (const void*) ID3D12Device8_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device8_46_SetResidencyPriority,
-    (const void*) ID3D12Device8_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device8_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device8_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device8_50_EnqueueMakeResident,
@@ -15019,32 +14460,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device9_9_CreateCommandAllocator(Proxy* self, ui
     if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12Device9_10_CreateGraphicsPipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device9::CreateGraphicsPipelineState", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE9, 10, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device9_11_CreateComputePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device9::CreateComputePipelineState", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE9, 11, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12Device9_12_CreateCommandList(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
     uint32_t w5 = vkd3d_iface_from_iid((const void*)(uintptr_t) a4);
     if (w5 == VKD3D_IFACE_INVALID) {
@@ -15301,19 +14716,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12Device9_46_SetResidencyPriority(Proxy* self, uin
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, p1, a2};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE9, 46, self->host, a);
     vkd3d_ifarray_free(&s1);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12Device9_47_CreatePipelineState(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
-    vkd3d_thunk_struct_iface("ID3D12Device9::CreatePipelineState", "D3D12_PIPELINE_STATE_STREAM_DESC", 0);
-    uint32_t w2 = vkd3d_iface_from_iid((const void*)(uintptr_t) a1);
-    if (w2 == VKD3D_IFACE_INVALID) {
-        if (a2) *(void**)(uintptr_t) a2 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h2 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, (a2 ? (uint64_t)(uintptr_t) &h2 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12DEVICE9, 47, self->host, a);
-    if (a2) *(void**)(uintptr_t) a2 = vkd3d_proxy_wrap(h2, w2);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12Device9_48_OpenExistingHeapFromAddress(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2) {
@@ -15575,8 +14977,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device9_target[76] = {
     (const void*) ID3D12Device9_7_GetNodeCount,
     (const void*) ID3D12Device9_8_CreateCommandQueue,
     (const void*) ID3D12Device9_9_CreateCommandAllocator,
-    (const void*) ID3D12Device9_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device9_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device9_12_CreateCommandList,
     (const void*) ID3D12Device9_13_CheckFeatureSupport,
     (const void*) ID3D12Device9_14_CreateDescriptorHeap,
@@ -15612,7 +15014,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device9_target[76] = {
     (const void*) ID3D12Device9_44_CreatePipelineLibrary,
     (const void*) ID3D12Device9_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device9_46_SetResidencyPriority,
-    (const void*) ID3D12Device9_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device9_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device9_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device9_50_EnqueueMakeResident,
@@ -15653,8 +15055,8 @@ VKD3D_THUNK_VTBL const void* kID3D12Device9_vtbl_sysv[76] = {
     (const void*) ID3D12Device9_7_GetNodeCount,
     (const void*) ID3D12Device9_8_CreateCommandQueue,
     (const void*) ID3D12Device9_9_CreateCommandAllocator,
-    (const void*) ID3D12Device9_10_CreateGraphicsPipelineState,
-    (const void*) ID3D12Device9_11_CreateComputePipelineState,
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState,
+    (const void*) vkd3d_fixup_CreateComputePipelineState,
     (const void*) ID3D12Device9_12_CreateCommandList,
     (const void*) ID3D12Device9_13_CheckFeatureSupport,
     (const void*) ID3D12Device9_14_CreateDescriptorHeap,
@@ -15690,7 +15092,7 @@ VKD3D_THUNK_VTBL const void* kID3D12Device9_vtbl_sysv[76] = {
     (const void*) ID3D12Device9_44_CreatePipelineLibrary,
     (const void*) ID3D12Device9_45_SetEventOnMultipleFenceCompletion,
     (const void*) ID3D12Device9_46_SetResidencyPriority,
-    (const void*) ID3D12Device9_47_CreatePipelineState,
+    (const void*) vkd3d_fixup_CreatePipelineState,
     (const void*) ID3D12Device9_48_OpenExistingHeapFromAddress,
     (const void*) ID3D12Device9_49_OpenExistingHeapFromFileMapping,
     (const void*) ID3D12Device9_50_EnqueueMakeResident,
@@ -16980,13 +16382,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList_15_CopyBufferRegion(Proxy* s
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, 17, self->host, a);
@@ -17025,12 +16420,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList_24_OMSetStencilRef(Proxy* se
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -17194,7 +16583,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList_target[60] = {
     (const void*) ID3D12GraphicsCommandList_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList_19_ResolveSubresource,
@@ -17204,7 +16593,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList_target[60] = {
     (const void*) ID3D12GraphicsCommandList_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList_29_SetComputeRootSignature,
@@ -17256,7 +16645,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList_vtbl_sysv[60] = {
     (const void*) ID3D12GraphicsCommandList_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList_19_ResolveSubresource,
@@ -17266,7 +16655,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList_vtbl_sysv[60] = {
     (const void*) ID3D12GraphicsCommandList_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList_29_SetComputeRootSignature,
@@ -17611,13 +17000,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList1_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST1, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList1_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList1::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList1::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST1, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList1_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST1, 17, self->host, a);
@@ -17656,12 +17038,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList1_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList1_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST1, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList1_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList1::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST1, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList1_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -17854,7 +17230,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList1_target[66] = {
     (const void*) ID3D12GraphicsCommandList1_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList1_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList1_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList1_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList1_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList1_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList1_19_ResolveSubresource,
@@ -17864,7 +17240,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList1_target[66] = {
     (const void*) ID3D12GraphicsCommandList1_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList1_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList1_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList1_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList1_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList1_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList1_29_SetComputeRootSignature,
@@ -17922,7 +17298,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList1_vtbl_sysv[66] = {
     (const void*) ID3D12GraphicsCommandList1_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList1_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList1_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList1_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList1_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList1_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList1_19_ResolveSubresource,
@@ -17932,7 +17308,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList1_vtbl_sysv[66] = {
     (const void*) ID3D12GraphicsCommandList1_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList1_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList1_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList1_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList1_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList1_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList1_29_SetComputeRootSignature,
@@ -18307,13 +17683,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_15_CopyBufferRegion(Proxy*
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList10::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList10::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 17, self->host, a);
@@ -18352,12 +17721,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_24_OMSetStencilRef(Proxy* 
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList10::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -18541,13 +17904,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_67_SetProtectedResourceSes
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 67, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_68_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList10::BeginRenderPass", "D3D12_RENDER_PASS_RENDER_TARGET_DESC", 1);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList10::BeginRenderPass", "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC", 2);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 68, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_69_EndRenderPass(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 69, self->host, a);
@@ -18596,12 +17952,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_79_DispatchMesh(Proxy* sel
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 79, self->host, a);
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_80_Barrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList10::Barrier", "D3D12_BARRIER_GROUP", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 80, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList10_81_OMSetFrontAndBackStencilRef(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST10, 81, self->host, a);
@@ -18636,7 +17986,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_target[86] = {
     (const void*) ID3D12GraphicsCommandList10_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList10_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList10_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList10_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList10_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList10_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList10_19_ResolveSubresource,
@@ -18646,7 +17996,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_target[86] = {
     (const void*) ID3D12GraphicsCommandList10_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList10_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList10_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList10_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList10_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList10_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList10_29_SetComputeRootSignature,
@@ -18688,7 +18038,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_target[86] = {
     (const void*) ID3D12GraphicsCommandList10_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList10_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList10_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList10_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList10_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList10_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList10_71_ExecuteMetaCommand,
@@ -18700,7 +18050,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_target[86] = {
     (const void*) ID3D12GraphicsCommandList10_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList10_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList10_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList10_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
     (const void*) ID3D12GraphicsCommandList10_81_OMSetFrontAndBackStencilRef,
     (const void*) vkd3d_fstub_RSSetDepthBias,
     (const void*) ID3D12GraphicsCommandList10_83_IASetIndexBufferStripCutValue,
@@ -18724,7 +18074,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_vtbl_sysv[86] = {
     (const void*) ID3D12GraphicsCommandList10_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList10_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList10_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList10_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList10_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList10_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList10_19_ResolveSubresource,
@@ -18734,7 +18084,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_vtbl_sysv[86] = {
     (const void*) ID3D12GraphicsCommandList10_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList10_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList10_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList10_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList10_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList10_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList10_29_SetComputeRootSignature,
@@ -18776,7 +18126,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_vtbl_sysv[86] = {
     (const void*) ID3D12GraphicsCommandList10_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList10_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList10_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList10_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList10_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList10_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList10_71_ExecuteMetaCommand,
@@ -18788,7 +18138,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList10_vtbl_sysv[86] = {
     (const void*) ID3D12GraphicsCommandList10_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList10_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList10_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList10_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
     (const void*) ID3D12GraphicsCommandList10_81_OMSetFrontAndBackStencilRef,
     (const void*) vkd3d_fstub_RSSetDepthBias,
     (const void*) ID3D12GraphicsCommandList10_83_IASetIndexBufferStripCutValue,
@@ -19209,13 +18559,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList2_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST2, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList2_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList2::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList2::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST2, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList2_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST2, 17, self->host, a);
@@ -19254,12 +18597,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList2_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList2_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST2, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList2_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList2::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST2, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList2_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -19456,7 +18793,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList2_target[67] = {
     (const void*) ID3D12GraphicsCommandList2_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList2_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList2_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList2_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList2_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList2_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList2_19_ResolveSubresource,
@@ -19466,7 +18803,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList2_target[67] = {
     (const void*) ID3D12GraphicsCommandList2_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList2_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList2_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList2_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList2_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList2_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList2_29_SetComputeRootSignature,
@@ -19525,7 +18862,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList2_vtbl_sysv[67] = {
     (const void*) ID3D12GraphicsCommandList2_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList2_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList2_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList2_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList2_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList2_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList2_19_ResolveSubresource,
@@ -19535,7 +18872,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList2_vtbl_sysv[67] = {
     (const void*) ID3D12GraphicsCommandList2_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList2_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList2_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList2_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList2_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList2_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList2_29_SetComputeRootSignature,
@@ -19915,13 +19252,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList3_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST3, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList3_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList3::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList3::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST3, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList3_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST3, 17, self->host, a);
@@ -19960,12 +19290,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList3_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList3_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST3, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList3_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList3::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST3, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList3_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -20167,7 +19491,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList3_target[68] = {
     (const void*) ID3D12GraphicsCommandList3_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList3_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList3_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList3_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList3_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList3_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList3_19_ResolveSubresource,
@@ -20177,7 +19501,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList3_target[68] = {
     (const void*) ID3D12GraphicsCommandList3_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList3_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList3_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList3_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList3_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList3_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList3_29_SetComputeRootSignature,
@@ -20237,7 +19561,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList3_vtbl_sysv[68] = {
     (const void*) ID3D12GraphicsCommandList3_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList3_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList3_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList3_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList3_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList3_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList3_19_ResolveSubresource,
@@ -20247,7 +19571,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList3_vtbl_sysv[68] = {
     (const void*) ID3D12GraphicsCommandList3_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList3_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList3_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList3_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList3_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList3_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList3_29_SetComputeRootSignature,
@@ -20632,13 +19956,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList4::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList4::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 17, self->host, a);
@@ -20677,12 +19994,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList4::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -20866,13 +20177,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_67_SetProtectedResourceSess
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 67, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_68_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList4::BeginRenderPass", "D3D12_RENDER_PASS_RENDER_TARGET_DESC", 1);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList4::BeginRenderPass", "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC", 2);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 68, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList4_69_EndRenderPass(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, 69, self->host, a);
@@ -20926,7 +20230,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList4_target[77] = {
     (const void*) ID3D12GraphicsCommandList4_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList4_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList4_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList4_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList4_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList4_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList4_19_ResolveSubresource,
@@ -20936,7 +20240,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList4_target[77] = {
     (const void*) ID3D12GraphicsCommandList4_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList4_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList4_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList4_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList4_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList4_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList4_29_SetComputeRootSignature,
@@ -20978,7 +20282,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList4_target[77] = {
     (const void*) ID3D12GraphicsCommandList4_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList4_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList4_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList4_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList4_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList4_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList4_71_ExecuteMetaCommand,
@@ -21005,7 +20309,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList4_vtbl_sysv[77] = {
     (const void*) ID3D12GraphicsCommandList4_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList4_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList4_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList4_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList4_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList4_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList4_19_ResolveSubresource,
@@ -21015,7 +20319,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList4_vtbl_sysv[77] = {
     (const void*) ID3D12GraphicsCommandList4_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList4_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList4_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList4_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList4_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList4_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList4_29_SetComputeRootSignature,
@@ -21057,7 +20361,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList4_vtbl_sysv[77] = {
     (const void*) ID3D12GraphicsCommandList4_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList4_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList4_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList4_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList4_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList4_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList4_71_ExecuteMetaCommand,
@@ -21445,13 +20749,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList5::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList5::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 17, self->host, a);
@@ -21490,12 +20787,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList5::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -21679,13 +20970,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_67_SetProtectedResourceSess
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 67, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_68_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList5::BeginRenderPass", "D3D12_RENDER_PASS_RENDER_TARGET_DESC", 1);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList5::BeginRenderPass", "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC", 2);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 68, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList5_69_EndRenderPass(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST5, 69, self->host, a);
@@ -21748,7 +21032,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList5_target[79] = {
     (const void*) ID3D12GraphicsCommandList5_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList5_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList5_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList5_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList5_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList5_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList5_19_ResolveSubresource,
@@ -21758,7 +21042,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList5_target[79] = {
     (const void*) ID3D12GraphicsCommandList5_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList5_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList5_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList5_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList5_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList5_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList5_29_SetComputeRootSignature,
@@ -21800,7 +21084,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList5_target[79] = {
     (const void*) ID3D12GraphicsCommandList5_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList5_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList5_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList5_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList5_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList5_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList5_71_ExecuteMetaCommand,
@@ -21829,7 +21113,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList5_vtbl_sysv[79] = {
     (const void*) ID3D12GraphicsCommandList5_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList5_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList5_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList5_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList5_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList5_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList5_19_ResolveSubresource,
@@ -21839,7 +21123,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList5_vtbl_sysv[79] = {
     (const void*) ID3D12GraphicsCommandList5_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList5_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList5_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList5_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList5_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList5_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList5_29_SetComputeRootSignature,
@@ -21881,7 +21165,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList5_vtbl_sysv[79] = {
     (const void*) ID3D12GraphicsCommandList5_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList5_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList5_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList5_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList5_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList5_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList5_71_ExecuteMetaCommand,
@@ -22279,13 +21563,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList6::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList6::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 17, self->host, a);
@@ -22324,12 +21601,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList6::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -22513,13 +21784,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_67_SetProtectedResourceSess
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 67, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_68_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList6::BeginRenderPass", "D3D12_RENDER_PASS_RENDER_TARGET_DESC", 1);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList6::BeginRenderPass", "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC", 2);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 68, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList6_69_EndRenderPass(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST6, 69, self->host, a);
@@ -22586,7 +21850,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList6_target[80] = {
     (const void*) ID3D12GraphicsCommandList6_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList6_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList6_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList6_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList6_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList6_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList6_19_ResolveSubresource,
@@ -22596,7 +21860,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList6_target[80] = {
     (const void*) ID3D12GraphicsCommandList6_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList6_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList6_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList6_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList6_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList6_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList6_29_SetComputeRootSignature,
@@ -22638,7 +21902,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList6_target[80] = {
     (const void*) ID3D12GraphicsCommandList6_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList6_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList6_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList6_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList6_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList6_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList6_71_ExecuteMetaCommand,
@@ -22668,7 +21932,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList6_vtbl_sysv[80] = {
     (const void*) ID3D12GraphicsCommandList6_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList6_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList6_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList6_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList6_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList6_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList6_19_ResolveSubresource,
@@ -22678,7 +21942,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList6_vtbl_sysv[80] = {
     (const void*) ID3D12GraphicsCommandList6_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList6_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList6_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList6_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList6_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList6_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList6_29_SetComputeRootSignature,
@@ -22720,7 +21984,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList6_vtbl_sysv[80] = {
     (const void*) ID3D12GraphicsCommandList6_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList6_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList6_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList6_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList6_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList6_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList6_71_ExecuteMetaCommand,
@@ -23123,13 +22387,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList7::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList7::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 17, self->host, a);
@@ -23168,12 +22425,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList7::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -23357,13 +22608,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_67_SetProtectedResourceSess
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 67, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_68_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList7::BeginRenderPass", "D3D12_RENDER_PASS_RENDER_TARGET_DESC", 1);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList7::BeginRenderPass", "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC", 2);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 68, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_69_EndRenderPass(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 69, self->host, a);
@@ -23412,12 +22656,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_79_DispatchMesh(Proxy* self
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 79, self->host, a);
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList7_80_Barrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList7::Barrier", "D3D12_BARRIER_GROUP", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, 80, self->host, a);
-    return r_;
-}
 
 VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_target[81] = {
     (const void*) vkd3d_proxy_qi,
@@ -23436,7 +22674,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_target[81] = {
     (const void*) ID3D12GraphicsCommandList7_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList7_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList7_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList7_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList7_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList7_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList7_19_ResolveSubresource,
@@ -23446,7 +22684,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_target[81] = {
     (const void*) ID3D12GraphicsCommandList7_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList7_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList7_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList7_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList7_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList7_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList7_29_SetComputeRootSignature,
@@ -23488,7 +22726,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_target[81] = {
     (const void*) ID3D12GraphicsCommandList7_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList7_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList7_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList7_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList7_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList7_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList7_71_ExecuteMetaCommand,
@@ -23500,7 +22738,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_target[81] = {
     (const void*) ID3D12GraphicsCommandList7_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList7_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList7_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList7_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
 };
 VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_vtbl_sysv[81] = {
     (const void*) vkd3d_proxy_qi,
@@ -23519,7 +22757,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_vtbl_sysv[81] = {
     (const void*) ID3D12GraphicsCommandList7_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList7_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList7_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList7_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList7_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList7_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList7_19_ResolveSubresource,
@@ -23529,7 +22767,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_vtbl_sysv[81] = {
     (const void*) ID3D12GraphicsCommandList7_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList7_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList7_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList7_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList7_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList7_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList7_29_SetComputeRootSignature,
@@ -23571,7 +22809,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_vtbl_sysv[81] = {
     (const void*) ID3D12GraphicsCommandList7_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList7_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList7_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList7_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList7_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList7_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList7_71_ExecuteMetaCommand,
@@ -23583,7 +22821,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList7_vtbl_sysv[81] = {
     (const void*) ID3D12GraphicsCommandList7_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList7_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList7_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList7_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
 };
 #if VKD3D_HAVE_MS_ABI
 VKD3D_THUNK_STUB VKD3D_MS_ABI int32_t ID3D12GraphicsCommandList7_0_ms(Proxy* self, const void* riid, void** ppv) {
@@ -23979,13 +23217,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList8::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList8::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 17, self->host, a);
@@ -24024,12 +23255,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList8::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -24213,13 +23438,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_67_SetProtectedResourceSess
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 67, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_68_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList8::BeginRenderPass", "D3D12_RENDER_PASS_RENDER_TARGET_DESC", 1);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList8::BeginRenderPass", "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC", 2);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 68, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_69_EndRenderPass(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 69, self->host, a);
@@ -24268,12 +23486,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_79_DispatchMesh(Proxy* self
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 79, self->host, a);
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_80_Barrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList8::Barrier", "D3D12_BARRIER_GROUP", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 80, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList8_81_OMSetFrontAndBackStencilRef(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST8, 81, self->host, a);
@@ -24296,7 +23508,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_target[82] = {
     (const void*) ID3D12GraphicsCommandList8_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList8_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList8_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList8_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList8_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList8_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList8_19_ResolveSubresource,
@@ -24306,7 +23518,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_target[82] = {
     (const void*) ID3D12GraphicsCommandList8_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList8_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList8_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList8_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList8_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList8_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList8_29_SetComputeRootSignature,
@@ -24348,7 +23560,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_target[82] = {
     (const void*) ID3D12GraphicsCommandList8_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList8_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList8_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList8_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList8_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList8_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList8_71_ExecuteMetaCommand,
@@ -24360,7 +23572,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_target[82] = {
     (const void*) ID3D12GraphicsCommandList8_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList8_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList8_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList8_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
     (const void*) ID3D12GraphicsCommandList8_81_OMSetFrontAndBackStencilRef,
 };
 VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_vtbl_sysv[82] = {
@@ -24380,7 +23592,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_vtbl_sysv[82] = {
     (const void*) ID3D12GraphicsCommandList8_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList8_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList8_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList8_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList8_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList8_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList8_19_ResolveSubresource,
@@ -24390,7 +23602,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_vtbl_sysv[82] = {
     (const void*) ID3D12GraphicsCommandList8_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList8_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList8_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList8_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList8_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList8_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList8_29_SetComputeRootSignature,
@@ -24432,7 +23644,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_vtbl_sysv[82] = {
     (const void*) ID3D12GraphicsCommandList8_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList8_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList8_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList8_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList8_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList8_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList8_71_ExecuteMetaCommand,
@@ -24444,7 +23656,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList8_vtbl_sysv[82] = {
     (const void*) ID3D12GraphicsCommandList8_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList8_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList8_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList8_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
     (const void*) ID3D12GraphicsCommandList8_81_OMSetFrontAndBackStencilRef,
 };
 #if VKD3D_HAVE_MS_ABI
@@ -24845,13 +24057,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_15_CopyBufferRegion(Proxy* 
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 15, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_16_CopyTextureRegion(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3, uint64_t a4, uint64_t a5) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList9::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 0);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList9::CopyTextureRegion", "D3D12_TEXTURE_COPY_LOCATION", 4);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3, a4, a5};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 16, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_17_CopyResource(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0), vkd3d_proxy_unwrap((void*)(uintptr_t) a1)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 17, self->host, a);
@@ -24890,12 +24095,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_24_OMSetStencilRef(Proxy* s
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_25_SetPipelineState(Proxy* self, uint64_t a0) {
     uint64_t a[VKD3D_THUNK_ARGS] = {vkd3d_proxy_unwrap((void*)(uintptr_t) a0)};
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 25, self->host, a);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_26_ResourceBarrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList9::ResourceBarrier", "D3D12_RESOURCE_BARRIER", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 26, self->host, a);
     return r_;
 }
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_27_ExecuteBundle(Proxy* self, uint64_t a0) {
@@ -25079,13 +24278,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_67_SetProtectedResourceSess
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 67, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_68_BeginRenderPass(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList9::BeginRenderPass", "D3D12_RENDER_PASS_RENDER_TARGET_DESC", 1);
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList9::BeginRenderPass", "D3D12_RENDER_PASS_DEPTH_STENCIL_DESC", 2);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, a3};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 68, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_69_EndRenderPass(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 69, self->host, a);
@@ -25134,12 +24326,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_79_DispatchMesh(Proxy* self
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 79, self->host, a);
 }
-VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_80_Barrier(Proxy* self, uint64_t a0, uint64_t a1) {
-    vkd3d_thunk_struct_iface("ID3D12GraphicsCommandList9::Barrier", "D3D12_BARRIER_GROUP", 1);
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 80, self->host, a);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12GraphicsCommandList9_81_OMSetFrontAndBackStencilRef(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST9, 81, self->host, a);
@@ -25166,7 +24352,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_target[84] = {
     (const void*) ID3D12GraphicsCommandList9_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList9_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList9_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList9_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList9_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList9_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList9_19_ResolveSubresource,
@@ -25176,7 +24362,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_target[84] = {
     (const void*) ID3D12GraphicsCommandList9_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList9_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList9_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList9_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList9_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList9_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList9_29_SetComputeRootSignature,
@@ -25218,7 +24404,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_target[84] = {
     (const void*) ID3D12GraphicsCommandList9_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList9_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList9_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList9_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList9_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList9_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList9_71_ExecuteMetaCommand,
@@ -25230,7 +24416,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_target[84] = {
     (const void*) ID3D12GraphicsCommandList9_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList9_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList9_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList9_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
     (const void*) ID3D12GraphicsCommandList9_81_OMSetFrontAndBackStencilRef,
     (const void*) vkd3d_fstub_RSSetDepthBias,
     (const void*) ID3D12GraphicsCommandList9_83_IASetIndexBufferStripCutValue,
@@ -25252,7 +24438,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_vtbl_sysv[84] = {
     (const void*) ID3D12GraphicsCommandList9_13_DrawIndexedInstanced,
     (const void*) ID3D12GraphicsCommandList9_14_Dispatch,
     (const void*) ID3D12GraphicsCommandList9_15_CopyBufferRegion,
-    (const void*) ID3D12GraphicsCommandList9_16_CopyTextureRegion,
+    (const void*) vkd3d_fixup_CopyTextureRegion,
     (const void*) ID3D12GraphicsCommandList9_17_CopyResource,
     (const void*) ID3D12GraphicsCommandList9_18_CopyTiles,
     (const void*) ID3D12GraphicsCommandList9_19_ResolveSubresource,
@@ -25262,7 +24448,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_vtbl_sysv[84] = {
     (const void*) ID3D12GraphicsCommandList9_23_OMSetBlendFactor,
     (const void*) ID3D12GraphicsCommandList9_24_OMSetStencilRef,
     (const void*) ID3D12GraphicsCommandList9_25_SetPipelineState,
-    (const void*) ID3D12GraphicsCommandList9_26_ResourceBarrier,
+    (const void*) vkd3d_fixup_ResourceBarrier,
     (const void*) ID3D12GraphicsCommandList9_27_ExecuteBundle,
     (const void*) ID3D12GraphicsCommandList9_28_SetDescriptorHeaps,
     (const void*) ID3D12GraphicsCommandList9_29_SetComputeRootSignature,
@@ -25304,7 +24490,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_vtbl_sysv[84] = {
     (const void*) ID3D12GraphicsCommandList9_65_SetViewInstanceMask,
     (const void*) ID3D12GraphicsCommandList9_66_WriteBufferImmediate,
     (const void*) ID3D12GraphicsCommandList9_67_SetProtectedResourceSession,
-    (const void*) ID3D12GraphicsCommandList9_68_BeginRenderPass,
+    (const void*) vkd3d_fixup_BeginRenderPass,
     (const void*) ID3D12GraphicsCommandList9_69_EndRenderPass,
     (const void*) ID3D12GraphicsCommandList9_70_InitializeMetaCommand,
     (const void*) ID3D12GraphicsCommandList9_71_ExecuteMetaCommand,
@@ -25316,7 +24502,7 @@ VKD3D_THUNK_VTBL const void* kID3D12GraphicsCommandList9_vtbl_sysv[84] = {
     (const void*) ID3D12GraphicsCommandList9_77_RSSetShadingRate,
     (const void*) ID3D12GraphicsCommandList9_78_RSSetShadingRateImage,
     (const void*) ID3D12GraphicsCommandList9_79_DispatchMesh,
-    (const void*) ID3D12GraphicsCommandList9_80_Barrier,
+    (const void*) vkd3d_fixup_Barrier,
     (const void*) ID3D12GraphicsCommandList9_81_OMSetFrontAndBackStencilRef,
     (const void*) vkd3d_fstub_RSSetDepthBias,
     (const void*) ID3D12GraphicsCommandList9_83_IASetIndexBufferStripCutValue,
@@ -26248,32 +25434,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary_8_StorePipeline(Proxy* self, uin
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY, 8, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary_9_LoadGraphicsPipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12PipelineLibrary::LoadGraphicsPipeline", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 1);
-    uint32_t w3 = vkd3d_iface_from_iid((const void*)(uintptr_t) a2);
-    if (w3 == VKD3D_IFACE_INVALID) {
-        if (a3) *(void**)(uintptr_t) a3 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h3 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, (a3 ? (uint64_t)(uintptr_t) &h3 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY, 9, self->host, a);
-    if (a3) *(void**)(uintptr_t) a3 = vkd3d_proxy_wrap(h3, w3);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary_10_LoadComputePipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12PipelineLibrary::LoadComputePipeline", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 1);
-    uint32_t w3 = vkd3d_iface_from_iid((const void*)(uintptr_t) a2);
-    if (w3 == VKD3D_IFACE_INVALID) {
-        if (a3) *(void**)(uintptr_t) a3 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h3 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, (a3 ? (uint64_t)(uintptr_t) &h3 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY, 10, self->host, a);
-    if (a3) *(void**)(uintptr_t) a3 = vkd3d_proxy_wrap(h3, w3);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary_11_GetSerializedSize(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY, 11, self->host, a);
@@ -26293,8 +25453,8 @@ VKD3D_THUNK_VTBL const void* kID3D12PipelineLibrary_target[13] = {
     (const void*) ID3D12PipelineLibrary_6_SetName,
     (const void*) ID3D12PipelineLibrary_7_GetDevice,
     (const void*) ID3D12PipelineLibrary_8_StorePipeline,
-    (const void*) ID3D12PipelineLibrary_9_LoadGraphicsPipeline,
-    (const void*) ID3D12PipelineLibrary_10_LoadComputePipeline,
+    (const void*) vkd3d_fixup_LoadGraphicsPipeline,
+    (const void*) vkd3d_fixup_LoadComputePipeline,
     (const void*) ID3D12PipelineLibrary_11_GetSerializedSize,
     (const void*) ID3D12PipelineLibrary_12_Serialize,
 };
@@ -26308,8 +25468,8 @@ VKD3D_THUNK_VTBL const void* kID3D12PipelineLibrary_vtbl_sysv[13] = {
     (const void*) ID3D12PipelineLibrary_6_SetName,
     (const void*) ID3D12PipelineLibrary_7_GetDevice,
     (const void*) ID3D12PipelineLibrary_8_StorePipeline,
-    (const void*) ID3D12PipelineLibrary_9_LoadGraphicsPipeline,
-    (const void*) ID3D12PipelineLibrary_10_LoadComputePipeline,
+    (const void*) vkd3d_fixup_LoadGraphicsPipeline,
+    (const void*) vkd3d_fixup_LoadComputePipeline,
     (const void*) ID3D12PipelineLibrary_11_GetSerializedSize,
     (const void*) ID3D12PipelineLibrary_12_Serialize,
 };
@@ -26405,32 +25565,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary1_8_StorePipeline(Proxy* self, ui
     uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 8, self->host, a);
     return r_;
 }
-VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary1_9_LoadGraphicsPipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12PipelineLibrary1::LoadGraphicsPipeline", "D3D12_GRAPHICS_PIPELINE_STATE_DESC", 1);
-    uint32_t w3 = vkd3d_iface_from_iid((const void*)(uintptr_t) a2);
-    if (w3 == VKD3D_IFACE_INVALID) {
-        if (a3) *(void**)(uintptr_t) a3 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h3 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, (a3 ? (uint64_t)(uintptr_t) &h3 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 9, self->host, a);
-    if (a3) *(void**)(uintptr_t) a3 = vkd3d_proxy_wrap(h3, w3);
-    return r_;
-}
-VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary1_10_LoadComputePipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12PipelineLibrary1::LoadComputePipeline", "D3D12_COMPUTE_PIPELINE_STATE_DESC", 1);
-    uint32_t w3 = vkd3d_iface_from_iid((const void*)(uintptr_t) a2);
-    if (w3 == VKD3D_IFACE_INVALID) {
-        if (a3) *(void**)(uintptr_t) a3 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h3 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, (a3 ? (uint64_t)(uintptr_t) &h3 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 10, self->host, a);
-    if (a3) *(void**)(uintptr_t) a3 = vkd3d_proxy_wrap(h3, w3);
-    return r_;
-}
 VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary1_11_GetSerializedSize(Proxy* self) {
     uint64_t a[VKD3D_THUNK_ARGS] = {};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 11, self->host, a);
@@ -26438,19 +25572,6 @@ VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary1_11_GetSerializedSize(Proxy* sel
 VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary1_12_Serialize(Proxy* self, uint64_t a0, uint64_t a1) {
     uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1};
     return vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 12, self->host, a);
-}
-VKD3D_THUNK_STUB uint64_t ID3D12PipelineLibrary1_13_LoadPipeline(Proxy* self, uint64_t a0, uint64_t a1, uint64_t a2, uint64_t a3) {
-    vkd3d_thunk_struct_iface("ID3D12PipelineLibrary1::LoadPipeline", "D3D12_PIPELINE_STATE_STREAM_DESC", 1);
-    uint32_t w3 = vkd3d_iface_from_iid((const void*)(uintptr_t) a2);
-    if (w3 == VKD3D_IFACE_INVALID) {
-        if (a3) *(void**)(uintptr_t) a3 = nullptr;
-        return (uint64_t)(uint32_t) VKD3D_E_NOINTERFACE;
-    }
-    uint64_t h3 = 0;
-    uint64_t a[VKD3D_THUNK_ARGS] = {a0, a1, a2, (a3 ? (uint64_t)(uintptr_t) &h3 : 0)};
-    uint64_t r_ = vkd3d_thunk_call(VKD3D_IFACE_ID3D12PIPELINELIBRARY1, 13, self->host, a);
-    if (a3) *(void**)(uintptr_t) a3 = vkd3d_proxy_wrap(h3, w3);
-    return r_;
 }
 
 VKD3D_THUNK_VTBL const void* kID3D12PipelineLibrary1_target[14] = {
@@ -26463,11 +25584,11 @@ VKD3D_THUNK_VTBL const void* kID3D12PipelineLibrary1_target[14] = {
     (const void*) ID3D12PipelineLibrary1_6_SetName,
     (const void*) ID3D12PipelineLibrary1_7_GetDevice,
     (const void*) ID3D12PipelineLibrary1_8_StorePipeline,
-    (const void*) ID3D12PipelineLibrary1_9_LoadGraphicsPipeline,
-    (const void*) ID3D12PipelineLibrary1_10_LoadComputePipeline,
+    (const void*) vkd3d_fixup_LoadGraphicsPipeline,
+    (const void*) vkd3d_fixup_LoadComputePipeline,
     (const void*) ID3D12PipelineLibrary1_11_GetSerializedSize,
     (const void*) ID3D12PipelineLibrary1_12_Serialize,
-    (const void*) ID3D12PipelineLibrary1_13_LoadPipeline,
+    (const void*) vkd3d_fixup_LoadPipeline,
 };
 VKD3D_THUNK_VTBL const void* kID3D12PipelineLibrary1_vtbl_sysv[14] = {
     (const void*) vkd3d_proxy_qi,
@@ -26479,11 +25600,11 @@ VKD3D_THUNK_VTBL const void* kID3D12PipelineLibrary1_vtbl_sysv[14] = {
     (const void*) ID3D12PipelineLibrary1_6_SetName,
     (const void*) ID3D12PipelineLibrary1_7_GetDevice,
     (const void*) ID3D12PipelineLibrary1_8_StorePipeline,
-    (const void*) ID3D12PipelineLibrary1_9_LoadGraphicsPipeline,
-    (const void*) ID3D12PipelineLibrary1_10_LoadComputePipeline,
+    (const void*) vkd3d_fixup_LoadGraphicsPipeline,
+    (const void*) vkd3d_fixup_LoadComputePipeline,
     (const void*) ID3D12PipelineLibrary1_11_GetSerializedSize,
     (const void*) ID3D12PipelineLibrary1_12_Serialize,
-    (const void*) ID3D12PipelineLibrary1_13_LoadPipeline,
+    (const void*) vkd3d_fixup_LoadPipeline,
 };
 #if VKD3D_HAVE_MS_ABI
 VKD3D_THUNK_STUB VKD3D_MS_ABI int32_t ID3D12PipelineLibrary1_0_ms(Proxy* self, const void* riid, void** ppv) {
@@ -28793,6 +27914,24 @@ extern "C" const void* const* vkd3d_thunk_vtable_for(uint32_t iface,
 #endif
     return abi == VKD3D_ABI_SYSV ? kSysv[iface] : nullptr;
 }
+
+/* The struct-fixup symbols, indexed by VkdFixupKind.  Declared in
+   vkd3d_thunk_ids.h and defined in runtime/vkd3d_struct_fixups.cpp; gathered
+   here because this is the only file that already names all of them, and the
+   tests walk kVkdFixupSlots[] against it to prove every inheriting interface's
+   target[] entry really is the fixup and not a generic worker. */
+VKD3D_THUNK_VTBL const void* kVkdFixupTargets[VKD3D_FIXUP_COUNT] = {
+    (const void*) vkd3d_fixup_ResourceBarrier, /* VKD3D_FIXUP_RESOURCE_BARRIER */
+    (const void*) vkd3d_fixup_CopyTextureRegion, /* VKD3D_FIXUP_COPY_TEXTURE_REGION */
+    (const void*) vkd3d_fixup_CreateGraphicsPipelineState, /* VKD3D_FIXUP_CREATE_GRAPHICS_PIPELINE_STATE */
+    (const void*) vkd3d_fixup_CreateComputePipelineState, /* VKD3D_FIXUP_CREATE_COMPUTE_PIPELINE_STATE */
+    (const void*) vkd3d_fixup_LoadGraphicsPipeline, /* VKD3D_FIXUP_LOAD_GRAPHICS_PIPELINE */
+    (const void*) vkd3d_fixup_LoadComputePipeline, /* VKD3D_FIXUP_LOAD_COMPUTE_PIPELINE */
+    (const void*) vkd3d_fixup_CreatePipelineState, /* VKD3D_FIXUP_CREATE_PIPELINE_STATE */
+    (const void*) vkd3d_fixup_LoadPipeline, /* VKD3D_FIXUP_LOAD_PIPELINE */
+    (const void*) vkd3d_fixup_BeginRenderPass, /* VKD3D_FIXUP_BEGIN_RENDER_PASS */
+    (const void*) vkd3d_fixup_Barrier, /* VKD3D_FIXUP_BARRIER */
+};
 
 extern "C" uint32_t vkd3d_thunk_abi_available(void) {
 #if VKD3D_HAVE_MS_ABI

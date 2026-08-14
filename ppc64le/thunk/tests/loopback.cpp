@@ -33,16 +33,44 @@
 #include <utility>
 #include <vector>
 
-/* The flat exports the guest runtime defines, and the host runtime's pump
- * counters.  Declared here rather than in a header: the guest half deliberately
- * has no d3d12.h, and these are the only symbols a consumer links against. */
+/* The struct-fixup tests are the one part of this rig that needs the REAL
+ * D3D12 types: a test that built a D3D12_RESOURCE_BARRIER out of hand-counted
+ * bytes would be checking its own arithmetic rather than the fixup's.  Same
+ * include order as ppc64le/layout/probe.c, and LAST, because vkd3d_windows.h
+ * defines `interface` as a macro. */
+#define COM_NO_WINDOWS_H
+#include <vkd3d_windows.h>
+#include <vkd3d_dxgiformat.h>
+#include <vkd3d_dxgibase.h>
+#include <vkd3d_d3dcommon.h>
+#include <vkd3d_d3d12.h>
+
+/* The fixups' diagnostic counters (runtime/vkd3d_struct_fixups.cpp). */
 extern "C" {
-int32_t D3D12CreateDevice(void* adapter, uint32_t minimum_feature_level,
-                          const void* riid, void** device);
-int32_t D3D12SerializeRootSignature(const void* desc, uint32_t version,
-                                    void** blob, void** error_blob);
+uint64_t vkd3d_fixup_foreign_count(void);
+uint64_t vkd3d_fixup_warn_count(void);
+uint64_t vkd3d_fixup_heap_count(void);
+uint64_t vkd3d_fixup_refused_count(void);
+}
+
+/* Generated in vkd3d_thunk_guest.cpp: the fixup symbols indexed by
+ * VkdFixupKind, so the wiring test can compare target[] against them. */
+extern const void* kVkdFixupTargets[VKD3D_FIXUP_COUNT];
+
+/* The flat exports the guest runtime defines are declared by vkd3d_d3d12.h
+ * above with their REAL Windows prototypes -- which is what this rig now calls
+ * them through, since it has the headers.  (The guest half itself defines them
+ * with opaque pointer types and no d3d12.h anywhere, deliberately; the two
+ * agree argument for argument, and the linker matches on the C name.)  The
+ * host runtime's pump counters have no header at all. */
+extern "C" {
 uint32_t vkd3d_host_pump_registered(void);
 uint32_t vkd3d_host_pump_fired(void);
+}
+
+/* A 16-byte IID image as the C++ REFIID the widl prototypes want. */
+static const IID& as_iid(const uint8_t b[16]) {
+    return *reinterpret_cast<const IID*>(b);
 }
 
 /* ------------------------------------------------------- the loopback ---- */
@@ -390,13 +418,141 @@ static uint64_t mock_multi_fence(void* self, uint64_t fences, uint64_t values,
     return uint64_t(uint32_t(VKD3D_S_OK));
 }
 
+/* ---- the struct fixups -------------------------------------------------
+ *
+ * Every one of these mocks has to SNAPSHOT what it received while the call is
+ * still on the stack: the fixup's scratch copy is a stack array or one malloc
+ * that is gone by the time the mock returns, which is precisely the property
+ * that makes copy-in marshalling legal.  Two snapshot buffers, because
+ * CopyTextureRegion has two structs and Barrier has a group array plus a
+ * nested barrier array. */
+static uint8_t  g_snap[2][64 * 1024];
+static size_t   g_snap_len[2] = {0, 0};
+static uint64_t g_snap_src[2] = {0, 0};
+
+static void snapshot(int which, const void* p, size_t n) {
+    g_snap_src[which] = reinterpret_cast<uint64_t>(p);
+    if (n > sizeof(g_snap[which])) n = sizeof(g_snap[which]);
+    g_snap_len[which] = n;
+    if (p && n) std::memcpy(g_snap[which], p, n);
+}
+
+template <typename T> static const T* snap(int which) {
+    return reinterpret_cast<const T*>(g_snap[which]);
+}
+
+/* ID3D12GraphicsCommandList::ResourceBarrier(UINT, const D3D12_RESOURCE_BARRIER*) */
+static uint64_t mock_resource_barrier(void* self, uint64_t count, uint64_t p) {
+    MockObject* o = static_cast<MockSub*>(self)->owner;
+    o->last_a[0] = count;
+    o->last_a[1] = p;
+    o->last_argc = 2;
+    snapshot(0, reinterpret_cast<const void*>(p),
+             size_t(count) * sizeof(D3D12_RESOURCE_BARRIER));
+    return 0;
+}
+
+/* CopyTextureRegion(dst, x, y, z, src, box) */
+static uint64_t mock_copy_texture_region(void* self, uint64_t dst, uint64_t x,
+                                         uint64_t y, uint64_t z, uint64_t src,
+                                         uint64_t box) {
+    MockObject* o = static_cast<MockSub*>(self)->owner;
+    o->last_a[0] = dst; o->last_a[1] = x; o->last_a[2] = y; o->last_a[3] = z;
+    o->last_a[4] = src; o->last_a[5] = box;
+    o->last_argc = 6;
+    snapshot(0, reinterpret_cast<const void*>(dst),
+             sizeof(D3D12_TEXTURE_COPY_LOCATION));
+    snapshot(1, reinterpret_cast<const void*>(src),
+             sizeof(D3D12_TEXTURE_COPY_LOCATION));
+    return 0;
+}
+
+/* Create*PipelineState(desc, riid, void**) and CreatePipelineState's stream
+ * flavour: same three-argument shape, so one mock with a settable copy size. */
+static size_t g_pso_desc_bytes = 0;
+static uint64_t mock_pso(void* self, uint64_t desc, uint64_t riid, uint64_t pp) {
+    MockObject* o = static_cast<MockSub*>(self)->owner;
+    o->last_a[0] = desc; o->last_a[1] = riid; o->last_a[2] = pp;
+    o->last_argc = 3;
+    snapshot(0, reinterpret_cast<const void*>(desc), g_pso_desc_bytes);
+    if (pp && g_out_object) {
+        g_out_object->refs.fetch_add(1);
+        *reinterpret_cast<uint64_t*>(pp) =
+            reinterpret_cast<uint64_t>(&g_out_object->primary);
+    }
+    return uint64_t(uint32_t(VKD3D_S_OK));
+}
+
+/* CreatePipelineState(const D3D12_PIPELINE_STATE_STREAM_DESC*, riid, void**):
+ * the descriptor AND the stream it points at both have to be captured. */
+static uint64_t mock_pipeline_stream(void* self, uint64_t desc, uint64_t riid,
+                                     uint64_t pp) {
+    MockObject* o = static_cast<MockSub*>(self)->owner;
+    o->last_a[0] = desc; o->last_a[1] = riid; o->last_a[2] = pp;
+    o->last_argc = 3;
+    snapshot(0, reinterpret_cast<const void*>(desc),
+             sizeof(D3D12_PIPELINE_STATE_STREAM_DESC));
+    if (desc) {
+        const D3D12_PIPELINE_STATE_STREAM_DESC* d =
+            reinterpret_cast<const D3D12_PIPELINE_STATE_STREAM_DESC*>(desc);
+        snapshot(1, d->pPipelineStateSubobjectStream, size_t(d->SizeInBytes));
+    }
+    if (pp && g_out_object) {
+        g_out_object->refs.fetch_add(1);
+        *reinterpret_cast<uint64_t*>(pp) =
+            reinterpret_cast<uint64_t>(&g_out_object->primary);
+    }
+    return uint64_t(uint32_t(VKD3D_S_OK));
+}
+
+/* BeginRenderPass(UINT, const RT desc*, const DS desc*, flags) */
+static uint64_t mock_begin_render_pass(void* self, uint64_t n, uint64_t rts,
+                                       uint64_t ds, uint64_t flags) {
+    MockObject* o = static_cast<MockSub*>(self)->owner;
+    o->last_a[0] = n; o->last_a[1] = rts; o->last_a[2] = ds; o->last_a[3] = flags;
+    o->last_argc = 4;
+    snapshot(0, reinterpret_cast<const void*>(rts),
+             size_t(n) * sizeof(D3D12_RENDER_PASS_RENDER_TARGET_DESC));
+    snapshot(1, reinterpret_cast<const void*>(ds),
+             sizeof(D3D12_RENDER_PASS_DEPTH_STENCIL_DESC));
+    return 0;
+}
+
+/* Barrier(UINT32, const D3D12_BARRIER_GROUP*).  The nested arrays are followed
+ * here, because their contents are the whole point. */
+static uint64_t g_seen_group_ptr[8] = {};
+static uint8_t  g_seen_nested[8][8 * 64];
+static uint64_t mock_barrier(void* self, uint64_t n, uint64_t groups) {
+    MockObject* o = static_cast<MockSub*>(self)->owner;
+    o->last_a[0] = n; o->last_a[1] = groups;
+    o->last_argc = 2;
+    snapshot(0, reinterpret_cast<const void*>(groups),
+             size_t(n) * sizeof(D3D12_BARRIER_GROUP));
+    const D3D12_BARRIER_GROUP* g =
+        reinterpret_cast<const D3D12_BARRIER_GROUP*>(groups);
+    for (uint64_t i = 0; g && i < n && i < 8; i++) {
+        size_t esz = g[i].Type == D3D12_BARRIER_TYPE_TEXTURE
+                         ? sizeof(D3D12_TEXTURE_BARRIER)
+                     : g[i].Type == D3D12_BARRIER_TYPE_BUFFER
+                         ? sizeof(D3D12_BUFFER_BARRIER)
+                         : sizeof(D3D12_GLOBAL_BARRIER);
+        const void* arr = g[i].pGlobalBarriers;   /* one union, one address */
+        g_seen_group_ptr[i] = reinterpret_cast<uint64_t>(arr);
+        size_t bytes = size_t(g[i].NumBarriers) * esz;
+        if (bytes > sizeof(g_seen_nested[i])) bytes = sizeof(g_seen_nested[i]);
+        if (arr && bytes) std::memcpy(g_seen_nested[i], arr, bytes);
+    }
+    return 0;
+}
+
 /* ---- mock vtables, one per role ---------------------------------------- */
 
 #define MOCK_VT_SLOTS 128
 
 enum MockRole {
-    VT_GENERIC = 0, VT_DEVICE, VT_DEVICE1, VT_DEVICE10, VT_HEAP, VT_LIST,
-    VT_QUEUE, VT_FENCE, VT_RESOURCE, VT_UNKNOWN, VT_ROLE_COUNT
+    VT_GENERIC = 0, VT_DEVICE, VT_DEVICE1, VT_DEVICE2, VT_DEVICE10, VT_HEAP,
+    VT_LIST, VT_LIST_EX, VT_QUEUE, VT_FENCE, VT_RESOURCE, VT_UNKNOWN,
+    VT_ROLE_COUNT
 };
 
 static void* g_vt[VT_ROLE_COUNT][MOCK_VT_SLOTS];
@@ -443,6 +599,22 @@ static void build_mock_vtables() {
 
     g_vt[VT_RESOURCE][VKD3D_SLOT_ID3D12RESOURCE_MAP] = (void*) mock_map;
     g_vt[VT_RESOURCE][VKD3D_SLOT_ID3D12RESOURCE_GETDEVICE] = (void*) mock_get_device;
+
+    /* The struct fixups. */
+    g_vt[VT_LIST][VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER] =
+        (void*) mock_resource_barrier;
+    g_vt[VT_LIST][VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_COPYTEXTUREREGION] =
+        (void*) mock_copy_texture_region;
+    g_vt[VT_LIST_EX][VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST4_BEGINRENDERPASS] =
+        (void*) mock_begin_render_pass;
+    g_vt[VT_LIST_EX][VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST7_BARRIER] =
+        (void*) mock_barrier;
+    g_vt[VT_DEVICE][VKD3D_SLOT_ID3D12DEVICE_CREATEGRAPHICSPIPELINESTATE] =
+        (void*) mock_pso;
+    g_vt[VT_DEVICE][VKD3D_SLOT_ID3D12DEVICE_CREATECOMPUTEPIPELINESTATE] =
+        (void*) mock_pso;
+    g_vt[VT_DEVICE2][VKD3D_SLOT_ID3D12DEVICE2_CREATEPIPELINESTATE] =
+        (void*) mock_pipeline_stream;
 }
 
 static void mock_init(MockObject* o, uint32_t iface, MockRole role) {
@@ -916,39 +1088,49 @@ static void test_refused() {
     CHECK(vkd3d_proxy_live_count() == 0, "leak");
 }
 
-/* One VKD3D_SLOT_STRUCT_IFACE call: ResourceBarrier, whose
- * D3D12_RESOURCE_BARRIER contains an ID3D12Resource* that crosses raw. */
-static void drive_struct_iface_slot(MockObject& list, void* p) {
-    typedef uint64_t (*Fn2)(void*, uint64_t, uint64_t);
-    Fn2 barrier = reinterpret_cast<Fn2>(
-        vslot(p, VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER));
-    uint64_t fake_barriers = 0xabcdef00ull;
-    barrier(p, 1, fake_barriers);
-    (void) list;
+/* One VKD3D_SLOT_STRUCT_IFACE call that is still a passthrough:
+ * ID3D12Device5::CreateStateObject, whose D3D12_STATE_OBJECT_DESC reaches an
+ * ID3D12RootSignature* through a self-referential subobject array.  It is the
+ * residue this package deliberately left behind (gen_thunk.py's
+ * LEFT_STRUCT_SLOTS), so it is still the one that warns and still the one
+ * VKD3D_THUNK_STRICT=1 aborts on.
+ *
+ * ResourceBarrier used to be this test's example.  It is now FIXED, which is
+ * exactly what test_fixup_resource_barrier() below checks. */
+static void drive_struct_iface_slot(MockObject& dev, void* p) {
+    typedef uint64_t (*Fn3)(void*, uint64_t, uint64_t, uint64_t);
+    Fn3 create = reinterpret_cast<Fn3>(
+        vslot(p, VKD3D_SLOT_ID3D12DEVICE5_CREATESTATEOBJECT));
+    uint8_t iid[16];
+    iid_of(VKD3D_IFACE_ID3D12STATEOBJECT, iid);
+    void* out = nullptr;
+    create(p, 0xabcdef00ull, reinterpret_cast<uint64_t>(iid),
+           reinterpret_cast<uint64_t>(&out));
+    (void) dev;
 }
 
 static void test_struct_iface() {
     std::printf("[structs carrying interface pointers: loud, not silent]\n");
-    MockObject list;
-    mock_init(&list, VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, VT_LIST);
-    void* p = vkd3d_proxy_wrap(host_of(list), VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST);
+    MockObject dev;
+    mock_init(&dev, VKD3D_IFACE_ID3D12DEVICE5, VT_GENERIC);
+    void* p = vkd3d_proxy_wrap(host_of(dev), VKD3D_IFACE_ID3D12DEVICE5);
 
     uint64_t warns_before = vkd3d_thunk_struct_iface_count();
     uint64_t cross_before = g_crossings.load();
-    drive_struct_iface_slot(list, p);
+    drive_struct_iface_slot(dev, p);
     CHECK(vkd3d_thunk_struct_iface_count() == warns_before + 1,
           "a STRUCT_IFACE slot did not warn");
     CHECK(g_crossings.load() == cross_before + 1,
           "a STRUCT_IFACE slot did not cross (it is supposed to, loudly)");
-    CHECK(list.last_a[1] == 0xabcdef00ull,
+    CHECK(dev.last_a[0] == 0xabcdef00ull,
           "the struct pointer was not passed through unchanged");
-    CHECK(kVkdSlotFlags[VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST]
-                       [VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER]
-          & VKD3D_SLOT_STRUCT_IFACE, "ResourceBarrier is not flagged STRUCT_IFACE");
+    CHECK(kVkdSlotFlags[VKD3D_IFACE_ID3D12DEVICE5]
+                       [VKD3D_SLOT_ID3D12DEVICE5_CREATESTATEOBJECT]
+          & VKD3D_SLOT_STRUCT_IFACE, "CreateStateObject is not flagged STRUCT_IFACE");
     CHECK(vkd3d_slot_untranslated(
-              kVkdSlotFlags[VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST]
-                           [VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER]),
-          "STRICT would not report ResourceBarrier");
+              kVkdSlotFlags[VKD3D_IFACE_ID3D12DEVICE5]
+                           [VKD3D_SLOT_ID3D12DEVICE5_CREATESTATEOBJECT]),
+          "STRICT would not report CreateStateObject");
     /* Map is RAW_VOID and deliberately NOT reported: mapped memory under a
      * shared address space is correct by design.  This is the one place this
      * project diverges from the D3D11 reference's STRICT policy. */
@@ -956,6 +1138,758 @@ static void test_struct_iface() {
               kVkdSlotFlags[VKD3D_IFACE_ID3D12RESOURCE][VKD3D_SLOT_ID3D12RESOURCE_MAP]),
           "STRICT reports ID3D12Resource::Map, which is correct by design");
 
+    release(p);
+    CHECK(vkd3d_proxy_live_count() == 0, "leak");
+}
+
+/* ======================================================================== */
+/* The struct fixups.                                                        */
+/*                                                                           */
+/* Every one of these asks the same three questions: did the HOST see host    */
+/* pointers where the guest wrote proxies, did every other byte survive       */
+/* bit-exact, and is the GUEST'S OWN struct still what it was afterwards.     */
+/* The third matters as much as the first: D3D12 callers reuse barrier arrays */
+/* frame after frame, and a fixup that unwrapped in place would work exactly  */
+/* once.                                                                      */
+/* ======================================================================== */
+
+/* Something that is a readable address but is NOT one of our proxies -- what
+ * a cross-runtime caller (the dxvk-dxgi seam) can legitimately hand us.
+ * vkd3d_thunk_unwrap() reads two words out of it to build a table key, so it
+ * has to be real memory; it never dereferences further. */
+static uint64_t g_foreign_object[4] = {0, 0, 0, 0};
+static void* foreign_ptr() { return (void*) g_foreign_object; }
+
+static void test_fixup_resource_barrier() {
+    std::printf("[fixup: ResourceBarrier -- the hottest call in the API]\n");
+    MockObject list, ra, rb;
+    mock_init(&list, VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, VT_LIST);
+    mock_init(&ra, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    mock_init(&rb, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    void* p  = vkd3d_proxy_wrap(host_of(list), VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST);
+    void* pa = vkd3d_proxy_wrap(host_of(ra), VKD3D_IFACE_ID3D12RESOURCE);
+    void* pb = vkd3d_proxy_wrap(host_of(rb), VKD3D_IFACE_ID3D12RESOURCE);
+
+    typedef uint64_t (*Fn2)(void*, uint64_t, uint64_t);
+    Fn2 barrier = reinterpret_cast<Fn2>(
+        vslot(p, VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER));
+
+    D3D12_RESOURCE_BARRIER b[4];
+    std::memset(b, 0, sizeof(b));
+    b[0].Type  = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    b[0].Flags = D3D12_RESOURCE_BARRIER_FLAG_BEGIN_ONLY;
+    b[0].Transition.pResource   = reinterpret_cast<ID3D12Resource*>(pa);
+    b[0].Transition.Subresource = 7;
+    b[0].Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+    b[0].Transition.StateAfter  = D3D12_RESOURCE_STATE_GENERIC_READ;
+    b[1].Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+    b[1].UAV.pResource = reinterpret_cast<ID3D12Resource*>(pb);
+    b[2].Type = D3D12_RESOURCE_BARRIER_TYPE_ALIASING;
+    b[2].Aliasing.pResourceBefore = reinterpret_cast<ID3D12Resource*>(pa);
+    b[2].Aliasing.pResourceAfter  = reinterpret_cast<ID3D12Resource*>(pb);
+    b[3].Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    b[3].Transition.pResource   = nullptr;     /* legal: a null resource */
+    b[3].Transition.Subresource = 0xffffffffu;
+
+    uint8_t snapshot_before[sizeof(b)];
+    std::memcpy(snapshot_before, b, sizeof(b));
+
+    uint64_t warns  = vkd3d_fixup_warn_count();
+    uint64_t heaps  = vkd3d_fixup_heap_count();
+    uint64_t cross  = g_crossings.load();
+    barrier(p, 4, reinterpret_cast<uint64_t>(b));
+
+    CHECK(g_crossings.load() == cross + 1, "ResourceBarrier crossed %llu times",
+          (unsigned long long) (g_crossings.load() - cross));
+    CHECK(std::memcmp(snapshot_before, b, sizeof(b)) == 0,
+          "the fixup modified the GUEST's barrier array (a caller that reuses "
+          "it would send host pointers back through unwrap next frame)");
+    CHECK(list.last_a[0] == 4, "barrier count mangled: %llu",
+          (unsigned long long) list.last_a[0]);
+    CHECK(list.last_a[1] != reinterpret_cast<uint64_t>(b),
+          "the guest's own array crossed; nothing was copied");
+    CHECK(g_snap_len[0] == sizeof(b), "the host saw %zu bytes, want %zu",
+          g_snap_len[0], sizeof(b));
+
+    const D3D12_RESOURCE_BARRIER* got = snap<D3D12_RESOURCE_BARRIER>(0);
+    CHECK(reinterpret_cast<uint64_t>(got[0].Transition.pResource) == host_of(ra),
+          "TRANSITION.pResource arrived as %p, want host %p",
+          (void*) got[0].Transition.pResource, (void*) host_of(ra));
+    CHECK(got[0].Type == D3D12_RESOURCE_BARRIER_TYPE_TRANSITION &&
+          got[0].Flags == D3D12_RESOURCE_BARRIER_FLAG_BEGIN_ONLY &&
+          got[0].Transition.Subresource == 7 &&
+          got[0].Transition.StateBefore == D3D12_RESOURCE_STATE_COPY_DEST &&
+          got[0].Transition.StateAfter == D3D12_RESOURCE_STATE_GENERIC_READ,
+          "a non-pointer field of the transition barrier was disturbed");
+    CHECK(reinterpret_cast<uint64_t>(got[1].UAV.pResource) == host_of(rb),
+          "UAV.pResource not unwrapped");
+    CHECK(reinterpret_cast<uint64_t>(got[2].Aliasing.pResourceBefore) == host_of(ra) &&
+          reinterpret_cast<uint64_t>(got[2].Aliasing.pResourceAfter) == host_of(rb),
+          "ALIASING resources not unwrapped");
+    CHECK(got[3].Transition.pResource == nullptr &&
+          got[3].Transition.Subresource == 0xffffffffu,
+          "a NULL resource did not stay NULL");
+    CHECK(vkd3d_fixup_warn_count() == warns,
+          "an array of nothing but our own proxies produced a warning");
+    CHECK(vkd3d_fixup_heap_count() == heaps,
+          "4 barriers did not fit the inline scratch");
+
+    /* Above the inline scratch (32): one malloc, still bit-exact. */
+    static D3D12_RESOURCE_BARRIER big[40];
+    std::memset(big, 0, sizeof(big));
+    for (int i = 0; i < 40; i++) {
+        big[i].Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+        big[i].UAV.pResource = reinterpret_cast<ID3D12Resource*>(i & 1 ? pb : pa);
+    }
+    barrier(p, 40, reinterpret_cast<uint64_t>(big));
+    CHECK(vkd3d_fixup_heap_count() == heaps + 1,
+          "41 barriers did not take the heap path (%llu allocations)",
+          (unsigned long long) (vkd3d_fixup_heap_count() - heaps));
+    const D3D12_RESOURCE_BARRIER* gotbig = snap<D3D12_RESOURCE_BARRIER>(0);
+    bool all_host = g_snap_len[0] == sizeof(big);
+    for (int i = 0; i < 40 && all_host; i++)
+        all_host = reinterpret_cast<uint64_t>(gotbig[i].UAV.pResource) ==
+                   (i & 1 ? host_of(rb) : host_of(ra));
+    CHECK(all_host, "the heap-allocated copy did not unwrap every element");
+
+    /* A pointer that is not one of ours: forwarded UNCHANGED, warned once. */
+    uint64_t foreign = vkd3d_fixup_foreign_count();
+    warns = vkd3d_fixup_warn_count();
+    D3D12_RESOURCE_BARRIER f[2];
+    std::memset(f, 0, sizeof(f));
+    f[0].Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+    f[0].UAV.pResource = reinterpret_cast<ID3D12Resource*>(foreign_ptr());
+    f[1].Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+    f[1].UAV.pResource = reinterpret_cast<ID3D12Resource*>(foreign_ptr());
+    barrier(p, 2, reinterpret_cast<uint64_t>(f));
+    const D3D12_RESOURCE_BARRIER* gotf = snap<D3D12_RESOURCE_BARRIER>(0);
+    CHECK(gotf[0].UAV.pResource == reinterpret_cast<ID3D12Resource*>(foreign_ptr()),
+          "a foreign (non-proxy) resource was not forwarded unchanged");
+    CHECK(vkd3d_fixup_foreign_count() == foreign + 2,
+          "the foreign-pointer counter did not see both members");
+    CHECK(vkd3d_fixup_warn_count() == warns + 1,
+          "the foreign-pointer warning is not once per slot (%llu lines)",
+          (unsigned long long) (vkd3d_fixup_warn_count() - warns));
+
+    /* An unknown union discriminant: those bytes cross exactly as written. */
+    warns = vkd3d_fixup_warn_count();
+    D3D12_RESOURCE_BARRIER u[1];
+    std::memset(u, 0xa5, sizeof(u));
+    u[0].Type = static_cast<D3D12_RESOURCE_BARRIER_TYPE>(77);
+    uint8_t ubefore[sizeof(u)];
+    std::memcpy(ubefore, u, sizeof(u));
+    barrier(p, 1, reinterpret_cast<uint64_t>(u));
+    CHECK(std::memcmp(snap<uint8_t>(0), ubefore, sizeof(u)) == 0,
+          "an unknown barrier type did not cross byte-for-byte");
+    CHECK(vkd3d_fixup_warn_count() == warns + 1,
+          "an unknown barrier type did not warn");
+
+    /* Null array / zero count still reach vkd3d, which owns that validation. */
+    cross = g_crossings.load();
+    barrier(p, 0, 0);
+    CHECK(g_crossings.load() == cross + 1, "a zero-count barrier call was eaten");
+
+    release(pa);
+    release(pb);
+    release(p);
+    CHECK(vkd3d_proxy_live_count() == 0, "leak");
+}
+
+static void test_fixup_copy_texture_region() {
+    std::printf("[fixup: CopyTextureRegion -- both arms of the union]\n");
+    MockObject list, ra, rb;
+    mock_init(&list, VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, VT_LIST);
+    mock_init(&ra, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    mock_init(&rb, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    void* p  = vkd3d_proxy_wrap(host_of(list), VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST);
+    void* pa = vkd3d_proxy_wrap(host_of(ra), VKD3D_IFACE_ID3D12RESOURCE);
+    void* pb = vkd3d_proxy_wrap(host_of(rb), VKD3D_IFACE_ID3D12RESOURCE);
+
+    D3D12_TEXTURE_COPY_LOCATION dst, src;
+    std::memset(&dst, 0, sizeof(dst));
+    std::memset(&src, 0, sizeof(src));
+    dst.pResource = reinterpret_cast<ID3D12Resource*>(pa);
+    dst.Type = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+    dst.SubresourceIndex = 5;
+    src.pResource = reinterpret_cast<ID3D12Resource*>(pb);
+    src.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+    src.PlacedFootprint.Offset = 0x0123456789abcdefull;
+    src.PlacedFootprint.Footprint.Format   = DXGI_FORMAT_R8G8B8A8_UNORM;
+    src.PlacedFootprint.Footprint.Width    = 1920;
+    src.PlacedFootprint.Footprint.Height   = 1080;
+    src.PlacedFootprint.Footprint.Depth    = 1;
+    src.PlacedFootprint.Footprint.RowPitch = 7680;
+
+    D3D12_BOX box = {1, 2, 3, 4, 5, 6};
+    uint8_t dbefore[sizeof(dst)], sbefore[sizeof(src)];
+    std::memcpy(dbefore, &dst, sizeof(dst));
+    std::memcpy(sbefore, &src, sizeof(src));
+
+    typedef uint64_t (*Fn6)(void*, uint64_t, uint64_t, uint64_t, uint64_t,
+                            uint64_t, uint64_t);
+    Fn6 copy = reinterpret_cast<Fn6>(
+        vslot(p, VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_COPYTEXTUREREGION));
+    copy(p, reinterpret_cast<uint64_t>(&dst), 11, 22, 33,
+         reinterpret_cast<uint64_t>(&src), reinterpret_cast<uint64_t>(&box));
+
+    CHECK(std::memcmp(dbefore, &dst, sizeof(dst)) == 0 &&
+          std::memcmp(sbefore, &src, sizeof(src)) == 0,
+          "the fixup modified the guest's copy locations");
+    CHECK(list.last_a[1] == 11 && list.last_a[2] == 22 && list.last_a[3] == 33,
+          "the x/y/z coordinates were disturbed");
+    CHECK(list.last_a[5] == reinterpret_cast<uint64_t>(&box),
+          "the D3D12_BOX pointer did not pass through unchanged");
+    CHECK(list.last_a[0] != reinterpret_cast<uint64_t>(&dst) &&
+          list.last_a[4] != reinterpret_cast<uint64_t>(&src),
+          "a copy location crossed uncopied");
+
+    const D3D12_TEXTURE_COPY_LOCATION* gd = snap<D3D12_TEXTURE_COPY_LOCATION>(0);
+    const D3D12_TEXTURE_COPY_LOCATION* gs = snap<D3D12_TEXTURE_COPY_LOCATION>(1);
+    CHECK(reinterpret_cast<uint64_t>(gd->pResource) == host_of(ra) &&
+          reinterpret_cast<uint64_t>(gs->pResource) == host_of(rb),
+          "pResource was not unwrapped in both locations");
+    CHECK(gd->Type == D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX &&
+          gd->SubresourceIndex == 5,
+          "the SubresourceIndex arm was disturbed");
+    CHECK(gs->Type == D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT &&
+          std::memcmp(&gs->PlacedFootprint, &src.PlacedFootprint,
+                      sizeof(src.PlacedFootprint)) == 0,
+          "the PlacedFootprint arm did not arrive bit-exact");
+
+    release(pa);
+    release(pb);
+    release(p);
+    CHECK(vkd3d_proxy_live_count() == 0, "leak");
+}
+
+static void test_fixup_pipeline_desc() {
+    std::printf("[fixup: CreateGraphicsPipelineState]\n");
+    MockObject dev, rs, pso;
+    mock_init(&dev, VKD3D_IFACE_ID3D12DEVICE, VT_DEVICE);
+    mock_init(&rs, VKD3D_IFACE_ID3D12ROOTSIGNATURE, VT_GENERIC);
+    mock_init(&pso, VKD3D_IFACE_ID3D12PIPELINESTATE, VT_GENERIC);
+    g_out_object = &pso;
+    void* p   = vkd3d_proxy_wrap(host_of(dev), VKD3D_IFACE_ID3D12DEVICE);
+    void* prs = vkd3d_proxy_wrap(host_of(rs), VKD3D_IFACE_ID3D12ROOTSIGNATURE);
+
+    static const uint8_t vs_bytecode[64] = {};
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC desc;
+    std::memset(&desc, 0, sizeof(desc));
+    desc.pRootSignature = reinterpret_cast<ID3D12RootSignature*>(prs);
+    desc.VS.pShaderBytecode = vs_bytecode;
+    desc.VS.BytecodeLength  = sizeof(vs_bytecode);
+    desc.SampleMask         = 0xa5a5a5a5u;
+    desc.NumRenderTargets   = 2;
+    desc.RTVFormats[0]      = DXGI_FORMAT_R8G8B8A8_UNORM;
+    desc.SampleDesc.Count   = 1;
+    desc.NodeMask           = 3;
+    desc.Flags              = D3D12_PIPELINE_STATE_FLAG_DEBUG;
+
+    uint8_t before[sizeof(desc)];
+    std::memcpy(before, &desc, sizeof(desc));
+    g_pso_desc_bytes = sizeof(desc);
+
+    uint8_t iid_pso[16];
+    iid_of(VKD3D_IFACE_ID3D12PIPELINESTATE, iid_pso);
+
+    typedef uint64_t (*Fn3)(void*, uint64_t, uint64_t, uint64_t);
+    Fn3 create = reinterpret_cast<Fn3>(
+        vslot(p, VKD3D_SLOT_ID3D12DEVICE_CREATEGRAPHICSPIPELINESTATE));
+
+    uint64_t warns = vkd3d_fixup_warn_count();
+    void* out = nullptr;
+    int32_t hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&desc),
+                                         reinterpret_cast<uint64_t>(iid_pso),
+                                         reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_S_OK, "CreateGraphicsPipelineState -> 0x%08x", unsigned(hr));
+    CHECK(std::memcmp(before, &desc, sizeof(desc)) == 0,
+          "the fixup modified the guest's descriptor");
+    CHECK(dev.last_a[0] != reinterpret_cast<uint64_t>(&desc),
+          "the guest's descriptor crossed uncopied");
+    CHECK(dev.last_a[2] != reinterpret_cast<uint64_t>(&out),
+          "the guest's out-slot was handed to the host");
+
+    /* Every byte identical except the one interface member.  Built by taking
+     * the guest's own bytes and substituting the host root signature: if any
+     * other field had been touched this comparison fails and names nothing in
+     * particular, which is the point -- it covers all 656 bytes. */
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC want;
+    std::memcpy(&want, before, sizeof(want));
+    want.pRootSignature = reinterpret_cast<ID3D12RootSignature*>(host_of(rs));
+    CHECK(g_snap_len[0] == sizeof(desc) &&
+          std::memcmp(snap<uint8_t>(0), &want, sizeof(want)) == 0,
+          "the descriptor the host saw is not 'the guest's bytes with "
+          "pRootSignature unwrapped'");
+    CHECK(out && as_proxy(out)->host == host_of(pso) &&
+          as_proxy(out)->iface == VKD3D_IFACE_ID3D12PIPELINESTATE,
+          "the riid-driven out-parameter did not wrap an ID3D12PipelineState");
+    CHECK(vkd3d_fixup_warn_count() == warns, "a clean create warned");
+    release(out);
+
+    /* An IID with no vtable: answered without crossing, out-slot nulled. */
+    uint8_t junk[16];
+    std::memset(junk, 0x3c, sizeof(junk));
+    uint64_t cross = g_crossings.load();
+    void* nothing = reinterpret_cast<void*>(0x1234);
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&desc),
+                                 reinterpret_cast<uint64_t>(junk),
+                                 reinterpret_cast<uint64_t>(&nothing))));
+    CHECK(hr == VKD3D_E_NOINTERFACE, "unknown IID gave 0x%08x", unsigned(hr));
+    CHECK(nothing == nullptr, "unknown IID left the out-parameter non-null");
+    CHECK(g_crossings.load() == cross, "unknown IID crossed the boundary");
+
+    /* A NULL root signature is legal (the shader embeds its own) and must not
+     * warn about anything. */
+    warns = vkd3d_fixup_warn_count();
+    desc.pRootSignature = nullptr;
+    out = nullptr;
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&desc),
+                                 reinterpret_cast<uint64_t>(iid_pso),
+                                 reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_S_OK, "NULL pRootSignature -> 0x%08x", unsigned(hr));
+    CHECK(snap<D3D12_GRAPHICS_PIPELINE_STATE_DESC>(0)->pRootSignature == nullptr,
+          "a NULL root signature did not stay NULL");
+    CHECK(vkd3d_fixup_warn_count() == warns,
+          "a NULL root signature produced a warning");
+    release(out);
+
+    release(prs);
+    release(p);
+    CHECK(vkd3d_proxy_live_count() == 0, "leak");
+}
+
+static void test_fixup_pipeline_stream() {
+    std::printf("[fixup: CreatePipelineState -- the subobject stream walker]\n");
+    MockObject dev, rs, pso;
+    mock_init(&dev, VKD3D_IFACE_ID3D12DEVICE2, VT_DEVICE2);
+    mock_init(&rs, VKD3D_IFACE_ID3D12ROOTSIGNATURE, VT_GENERIC);
+    mock_init(&pso, VKD3D_IFACE_ID3D12PIPELINESTATE, VT_GENERIC);
+    g_out_object = &pso;
+    void* p   = vkd3d_proxy_wrap(host_of(dev), VKD3D_IFACE_ID3D12DEVICE2);
+    void* prs = vkd3d_proxy_wrap(host_of(rs), VKD3D_IFACE_ID3D12ROOTSIGNATURE);
+
+    /* THE HAND-COMPUTED LAYOUT.  A subobject is
+     * `struct { D3D12_PIPELINE_STATE_SUBOBJECT_TYPE type; PAYLOAD data; }`
+     * and the next one starts at align(sizeof(that), sizeof(void*)) --
+     * libs/vkd3d/state.c, VKD3D_HANDLE_SUBOBJECT.  So, with a 4-byte type
+     * token and 8-byte pointers:
+     *
+     *   off  0  ROOT_SIGNATURE  pad 4, payload 8 at +8, sizeof 16 -> next 16
+     *   off 16  VS              pad 4, D3D12_SHADER_BYTECODE (16) at +8,
+     *                           sizeof 24 -> next 40
+     *   off 40  SAMPLE_MASK     UINT at +4, sizeof 8 -> next 48
+     *   off 48  FLAGS           enum at +4, sizeof 8 -> next 56
+     *   total 56
+     *
+     * Asserted against the compiler below rather than trusted, because if the
+     * two ever disagree the walker rewrites the wrong eight bytes. */
+    struct SubRoot  { D3D12_PIPELINE_STATE_SUBOBJECT_TYPE t; ID3D12RootSignature* d; };
+    struct SubVs    { D3D12_PIPELINE_STATE_SUBOBJECT_TYPE t; D3D12_SHADER_BYTECODE d; };
+    struct SubMask  { D3D12_PIPELINE_STATE_SUBOBJECT_TYPE t; UINT d; };
+    struct SubFlags { D3D12_PIPELINE_STATE_SUBOBJECT_TYPE t; D3D12_PIPELINE_STATE_FLAGS d; };
+    CHECK(sizeof(SubRoot) == 16 && offsetof(SubRoot, d) == 8,
+          "ROOT_SIGNATURE subobject is %zu bytes, payload at %zu",
+          sizeof(SubRoot), offsetof(SubRoot, d));
+    CHECK(sizeof(SubVs) == 24 && offsetof(SubVs, d) == 8,
+          "VS subobject is %zu bytes, payload at %zu",
+          sizeof(SubVs), offsetof(SubVs, d));
+    CHECK(sizeof(SubMask) == 8 && offsetof(SubMask, d) == 4,
+          "SAMPLE_MASK subobject is %zu bytes, payload at %zu",
+          sizeof(SubMask), offsetof(SubMask, d));
+    CHECK(sizeof(SubFlags) == 8 && offsetof(SubFlags, d) == 4,
+          "FLAGS subobject is %zu bytes, payload at %zu",
+          sizeof(SubFlags), offsetof(SubFlags, d));
+
+    const size_t kRoot = 0, kVs = 16, kMask = 40, kFlags = 48, kTotal = 56;
+    static const uint8_t vs_bytecode[32] = {};
+
+    alignas(16) uint8_t stream[128];
+    std::memset(stream, 0, sizeof(stream));
+    SubRoot  sr{D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_ROOT_SIGNATURE,
+                reinterpret_cast<ID3D12RootSignature*>(prs)};
+    SubVs    sv{D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_VS,
+                {vs_bytecode, sizeof(vs_bytecode)}};
+    SubMask  sm{D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_SAMPLE_MASK, 0xdeadbeefu};
+    SubFlags sf{D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_FLAGS,
+                D3D12_PIPELINE_STATE_FLAG_DEBUG};
+    std::memcpy(stream + kRoot,  &sr, sizeof(sr));
+    std::memcpy(stream + kVs,    &sv, sizeof(sv));
+    std::memcpy(stream + kMask,  &sm, sizeof(sm));
+    std::memcpy(stream + kFlags, &sf, sizeof(sf));
+
+    uint8_t before[sizeof(stream)];
+    std::memcpy(before, stream, sizeof(stream));
+
+    D3D12_PIPELINE_STATE_STREAM_DESC sd;
+    sd.SizeInBytes = kTotal;
+    sd.pPipelineStateSubobjectStream = stream;
+
+    uint8_t iid_pso[16];
+    iid_of(VKD3D_IFACE_ID3D12PIPELINESTATE, iid_pso);
+    typedef uint64_t (*Fn3)(void*, uint64_t, uint64_t, uint64_t);
+    Fn3 create = reinterpret_cast<Fn3>(
+        vslot(p, VKD3D_SLOT_ID3D12DEVICE2_CREATEPIPELINESTATE));
+
+    void* out = nullptr;
+    int32_t hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&sd),
+                                         reinterpret_cast<uint64_t>(iid_pso),
+                                         reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_S_OK, "CreatePipelineState -> 0x%08x", unsigned(hr));
+    CHECK(std::memcmp(before, stream, sizeof(stream)) == 0,
+          "the walker modified the guest's stream");
+    CHECK(dev.last_a[0] != reinterpret_cast<uint64_t>(&sd),
+          "the stream DESCRIPTOR crossed uncopied");
+    CHECK(g_snap_src[1] != reinterpret_cast<uint64_t>(stream),
+          "the stream itself crossed uncopied");
+    CHECK(snap<D3D12_PIPELINE_STATE_STREAM_DESC>(0)->SizeInBytes == kTotal,
+          "SizeInBytes was disturbed");
+
+    /* Only the root-signature payload may differ, and by exactly the unwrap. */
+    uint8_t want[kTotal];
+    std::memcpy(want, before, kTotal);
+    ID3D12RootSignature* host_rs =
+        reinterpret_cast<ID3D12RootSignature*>(host_of(rs));
+    std::memcpy(want + kRoot + offsetof(SubRoot, d), &host_rs, sizeof(host_rs));
+    CHECK(g_snap_len[1] == kTotal &&
+          std::memcmp(snap<uint8_t>(1), want, kTotal) == 0,
+          "the stream the host saw is not 'the guest's bytes with the root "
+          "signature unwrapped'");
+    CHECK(out && as_proxy(out)->iface == VKD3D_IFACE_ID3D12PIPELINESTATE,
+          "the stream flavour did not wrap its out-parameter");
+    release(out);
+
+    /* --- the four refusals, none of which may cross --- */
+    uint64_t refused = vkd3d_fixup_refused_count();
+    uint64_t cross   = g_crossings.load();
+
+    /* duplicate subobject type */
+    alignas(16) uint8_t dup[64];
+    std::memset(dup, 0, sizeof(dup));
+    std::memcpy(dup + 0, &sm, sizeof(sm));
+    std::memcpy(dup + 8, &sm, sizeof(sm));
+    sd.pPipelineStateSubobjectStream = dup;
+    sd.SizeInBytes = 16;
+    out = reinterpret_cast<void*>(0x99);
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&sd),
+                                 reinterpret_cast<uint64_t>(iid_pso),
+                                 reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_E_INVALIDARG, "a duplicate subobject gave 0x%08x", unsigned(hr));
+    CHECK(out == nullptr, "a refused stream left the out-parameter non-null");
+
+    /* a subobject type this build does not know */
+    alignas(16) uint8_t unk[64];
+    std::memset(unk, 0, sizeof(unk));
+    uint32_t bad_type = 99;
+    std::memcpy(unk, &bad_type, sizeof(bad_type));
+    sd.pPipelineStateSubobjectStream = unk;
+    sd.SizeInBytes = 16;
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&sd),
+                                 reinterpret_cast<uint64_t>(iid_pso),
+                                 reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_E_INVALIDARG, "an unknown subobject gave 0x%08x", unsigned(hr));
+
+    /* SizeInBytes that stops in the middle of the last subobject */
+    sd.pPipelineStateSubobjectStream = stream;
+    sd.SizeInBytes = kTotal - 4;
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&sd),
+                                 reinterpret_cast<uint64_t>(iid_pso),
+                                 reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_E_INVALIDARG, "a truncated stream gave 0x%08x", unsigned(hr));
+
+    /* one over the sanity cap, refused before a byte is read */
+    sd.SizeInBytes = 4u << 20;
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&sd),
+                                 reinterpret_cast<uint64_t>(iid_pso),
+                                 reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_E_INVALIDARG, "a 4 MiB stream gave 0x%08x", unsigned(hr));
+
+    /* and a nonzero size with no stream, which vkd3d would walk off a null */
+    sd.pPipelineStateSubobjectStream = nullptr;
+    sd.SizeInBytes = 16;
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&sd),
+                                 reinterpret_cast<uint64_t>(iid_pso),
+                                 reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_E_INVALIDARG, "a null stream with size 16 gave 0x%08x",
+          unsigned(hr));
+
+    CHECK(g_crossings.load() == cross,
+          "a refused stream crossed the boundary %llu times",
+          (unsigned long long) (g_crossings.load() - cross));
+    CHECK(vkd3d_fixup_refused_count() == refused + 5,
+          "the refusal counter saw %llu of 5",
+          (unsigned long long) (vkd3d_fixup_refused_count() - refused));
+
+    /* An entirely empty stream is legal ("all defaults") and DOES cross. */
+    sd.pPipelineStateSubobjectStream = nullptr;
+    sd.SizeInBytes = 0;
+    out = nullptr;
+    hr = int32_t(uint32_t(create(p, reinterpret_cast<uint64_t>(&sd),
+                                 reinterpret_cast<uint64_t>(iid_pso),
+                                 reinterpret_cast<uint64_t>(&out))));
+    CHECK(hr == VKD3D_S_OK, "an empty stream gave 0x%08x", unsigned(hr));
+    CHECK(g_crossings.load() == cross + 1, "an empty stream did not cross");
+    release(out);
+
+    release(prs);
+    release(p);
+    CHECK(vkd3d_proxy_live_count() == 0, "leak");
+}
+
+static void test_fixup_begin_render_pass() {
+    std::printf("[fixup: BeginRenderPass]\n");
+    MockObject list, ra, rb;
+    mock_init(&list, VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4, VT_LIST_EX);
+    mock_init(&ra, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    mock_init(&rb, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    void* p  = vkd3d_proxy_wrap(host_of(list), VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST4);
+    void* pa = vkd3d_proxy_wrap(host_of(ra), VKD3D_IFACE_ID3D12RESOURCE);
+    void* pb = vkd3d_proxy_wrap(host_of(rb), VKD3D_IFACE_ID3D12RESOURCE);
+
+    static const D3D12_RENDER_PASS_ENDING_ACCESS_RESOLVE_SUBRESOURCE_PARAMETERS
+        subparams[2] = {};
+
+    D3D12_RENDER_PASS_RENDER_TARGET_DESC rt[2];
+    std::memset(rt, 0, sizeof(rt));
+    rt[0].cpuDescriptor.ptr = 0x1000;
+    rt[0].BeginningAccess.Type = D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_CLEAR;
+    rt[0].BeginningAccess.Clear.ClearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    rt[0].EndingAccess.Type = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_RESOLVE;
+    rt[0].EndingAccess.Resolve.pSrcResource = reinterpret_cast<ID3D12Resource*>(pa);
+    rt[0].EndingAccess.Resolve.pDstResource = reinterpret_cast<ID3D12Resource*>(pb);
+    rt[0].EndingAccess.Resolve.SubresourceCount = 2;
+    rt[0].EndingAccess.Resolve.pSubresourceParameters = subparams;
+    rt[0].EndingAccess.Resolve.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    rt[1].cpuDescriptor.ptr = 0x2000;
+    rt[1].EndingAccess.Type = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE;
+    /* A PRESERVE ending selects no union arm.  Something proxy-shaped is left
+     * in those bytes on purpose: the fixup must not read them as a resource. */
+    rt[1].EndingAccess.Resolve.pSrcResource = reinterpret_cast<ID3D12Resource*>(pa);
+
+    D3D12_RENDER_PASS_DEPTH_STENCIL_DESC ds;
+    std::memset(&ds, 0, sizeof(ds));
+    ds.cpuDescriptor.ptr = 0x3000;
+    ds.DepthEndingAccess.Type = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_RESOLVE;
+    ds.DepthEndingAccess.Resolve.pSrcResource = reinterpret_cast<ID3D12Resource*>(pb);
+    ds.DepthEndingAccess.Resolve.pDstResource = reinterpret_cast<ID3D12Resource*>(pa);
+    ds.StencilEndingAccess.Type = D3D12_RENDER_PASS_ENDING_ACCESS_TYPE_PRESERVE;
+    ds.StencilEndingAccess.Resolve.pSrcResource = reinterpret_cast<ID3D12Resource*>(pa);
+
+    uint8_t rtbefore[sizeof(rt)], dsbefore[sizeof(ds)];
+    std::memcpy(rtbefore, rt, sizeof(rt));
+    std::memcpy(dsbefore, &ds, sizeof(ds));
+
+    typedef uint64_t (*Fn4)(void*, uint64_t, uint64_t, uint64_t, uint64_t);
+    Fn4 begin = reinterpret_cast<Fn4>(
+        vslot(p, VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST4_BEGINRENDERPASS));
+    begin(p, 2, reinterpret_cast<uint64_t>(rt),
+          reinterpret_cast<uint64_t>(&ds), 0x5);
+
+    CHECK(std::memcmp(rtbefore, rt, sizeof(rt)) == 0 &&
+          std::memcmp(dsbefore, &ds, sizeof(ds)) == 0,
+          "the fixup modified the guest's render-pass descriptors");
+    CHECK(list.last_a[0] == 2 && list.last_a[3] == 0x5,
+          "the count or the flags were disturbed");
+
+    const D3D12_RENDER_PASS_RENDER_TARGET_DESC* g0 =
+        snap<D3D12_RENDER_PASS_RENDER_TARGET_DESC>(0);
+    const D3D12_RENDER_PASS_DEPTH_STENCIL_DESC* gds =
+        snap<D3D12_RENDER_PASS_DEPTH_STENCIL_DESC>(1);
+
+    CHECK(reinterpret_cast<uint64_t>(g0[0].EndingAccess.Resolve.pSrcResource) == host_of(ra) &&
+          reinterpret_cast<uint64_t>(g0[0].EndingAccess.Resolve.pDstResource) == host_of(rb),
+          "the RESOLVE ending's resources were not unwrapped");
+    CHECK(g0[0].EndingAccess.Resolve.pSubresourceParameters == subparams,
+          "pSubresourceParameters was rewritten; it points at guest memory "
+          "with no interface in it and must pass through");
+    CHECK(g0[0].EndingAccess.Resolve.SubresourceCount == 2 &&
+          g0[0].BeginningAccess.Type == D3D12_RENDER_PASS_BEGINNING_ACCESS_TYPE_CLEAR &&
+          g0[0].cpuDescriptor.ptr == 0x1000,
+          "a non-pointer field of the resolve target was disturbed");
+    CHECK(std::memcmp(&g0[1], rtbefore + sizeof(rt[0]), sizeof(rt[1])) == 0,
+          "the PRESERVE render target was not forwarded byte-for-byte");
+
+    CHECK(reinterpret_cast<uint64_t>(gds->DepthEndingAccess.Resolve.pSrcResource) == host_of(rb) &&
+          reinterpret_cast<uint64_t>(gds->DepthEndingAccess.Resolve.pDstResource) == host_of(ra),
+          "the depth RESOLVE's resources were not unwrapped");
+    CHECK(gds->StencilEndingAccess.Resolve.pSrcResource ==
+              reinterpret_cast<ID3D12Resource*>(pa),
+          "the PRESERVE stencil ending's union bytes were rewritten");
+    CHECK(gds->cpuDescriptor.ptr == 0x3000, "the DS descriptor handle was disturbed");
+
+    /* A null depth-stencil is legal. */
+    begin(p, 2, reinterpret_cast<uint64_t>(rt), 0, 0);
+    CHECK(list.last_a[2] == 0, "a null depth-stencil did not stay null");
+
+    release(pa);
+    release(pb);
+    release(p);
+    CHECK(vkd3d_proxy_live_count() == 0, "leak");
+}
+
+static void test_fixup_barrier() {
+    std::printf("[fixup: Barrier -- enhanced barrier groups]\n");
+    MockObject list, ra, rb;
+    mock_init(&list, VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7, VT_LIST_EX);
+    mock_init(&ra, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    mock_init(&rb, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    void* p  = vkd3d_proxy_wrap(host_of(list), VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST7);
+    void* pa = vkd3d_proxy_wrap(host_of(ra), VKD3D_IFACE_ID3D12RESOURCE);
+    void* pb = vkd3d_proxy_wrap(host_of(rb), VKD3D_IFACE_ID3D12RESOURCE);
+
+    D3D12_GLOBAL_BARRIER gb[2];
+    std::memset(gb, 0, sizeof(gb));
+    gb[0].SyncBefore = D3D12_BARRIER_SYNC_COPY;
+    gb[1].AccessAfter = D3D12_BARRIER_ACCESS_COPY_DEST;
+
+    D3D12_TEXTURE_BARRIER tb[2];
+    std::memset(tb, 0, sizeof(tb));
+    tb[0].pResource = reinterpret_cast<ID3D12Resource*>(pa);
+    tb[0].LayoutAfter = D3D12_BARRIER_LAYOUT_COPY_DEST;
+    tb[0].Subresources.NumMipLevels = 4;
+    tb[0].Flags = D3D12_TEXTURE_BARRIER_FLAG_DISCARD;
+    tb[1].pResource = reinterpret_cast<ID3D12Resource*>(pb);
+
+    D3D12_BUFFER_BARRIER bb[2];
+    std::memset(bb, 0, sizeof(bb));
+    bb[0].pResource = reinterpret_cast<ID3D12Resource*>(pb);
+    bb[0].Offset = 0x100;
+    bb[0].Size   = 0x200;
+    bb[1].pResource = nullptr;      /* legal: a null buffer barrier resource */
+
+    D3D12_BARRIER_GROUP g[3];
+    std::memset(g, 0, sizeof(g));
+    g[0].Type = D3D12_BARRIER_TYPE_GLOBAL;
+    g[0].NumBarriers = 2;
+    g[0].pGlobalBarriers = gb;
+    g[1].Type = D3D12_BARRIER_TYPE_TEXTURE;
+    g[1].NumBarriers = 2;
+    g[1].pTextureBarriers = tb;
+    g[2].Type = D3D12_BARRIER_TYPE_BUFFER;
+    g[2].NumBarriers = 2;
+    g[2].pBufferBarriers = bb;
+
+    uint8_t gbefore[sizeof(g)], tbefore[sizeof(tb)], bbefore[sizeof(bb)];
+    std::memcpy(gbefore, g, sizeof(g));
+    std::memcpy(tbefore, tb, sizeof(tb));
+    std::memcpy(bbefore, bb, sizeof(bb));
+
+    typedef uint64_t (*Fn2)(void*, uint64_t, uint64_t);
+    Fn2 barrier = reinterpret_cast<Fn2>(
+        vslot(p, VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST7_BARRIER));
+    barrier(p, 3, reinterpret_cast<uint64_t>(g));
+
+    CHECK(std::memcmp(gbefore, g, sizeof(g)) == 0 &&
+          std::memcmp(tbefore, tb, sizeof(tb)) == 0 &&
+          std::memcmp(bbefore, bb, sizeof(bb)) == 0,
+          "the fixup modified the guest's barrier groups or their arrays");
+
+    const D3D12_BARRIER_GROUP* gg = snap<D3D12_BARRIER_GROUP>(0);
+    CHECK(list.last_a[1] != reinterpret_cast<uint64_t>(g),
+          "the group array crossed uncopied");
+    CHECK(gg[0].pGlobalBarriers == gb,
+          "a GLOBAL group's array was copied; it carries no interface and "
+          "must pass through");
+    CHECK(std::memcmp(g_seen_nested[0], gb, sizeof(gb)) == 0,
+          "the global barriers were disturbed");
+    CHECK(gg[1].pTextureBarriers != tb, "the texture array was not copied");
+    CHECK(gg[2].pBufferBarriers != bb, "the buffer array was not copied");
+
+    const D3D12_TEXTURE_BARRIER* gt =
+        reinterpret_cast<const D3D12_TEXTURE_BARRIER*>(g_seen_nested[1]);
+    CHECK(reinterpret_cast<uint64_t>(gt[0].pResource) == host_of(ra) &&
+          reinterpret_cast<uint64_t>(gt[1].pResource) == host_of(rb),
+          "a texture barrier's pResource was not unwrapped");
+    CHECK(gt[0].LayoutAfter == D3D12_BARRIER_LAYOUT_COPY_DEST &&
+          gt[0].Subresources.NumMipLevels == 4 &&
+          gt[0].Flags == D3D12_TEXTURE_BARRIER_FLAG_DISCARD,
+          "a texture barrier's other fields were disturbed");
+
+    const D3D12_BUFFER_BARRIER* gbuf =
+        reinterpret_cast<const D3D12_BUFFER_BARRIER*>(g_seen_nested[2]);
+    CHECK(reinterpret_cast<uint64_t>(gbuf[0].pResource) == host_of(rb) &&
+          gbuf[0].Offset == 0x100 && gbuf[0].Size == 0x200,
+          "a buffer barrier was not unwrapped or was disturbed");
+    CHECK(gbuf[1].pResource == nullptr, "a null buffer resource did not stay null");
+
+    release(pa);
+    release(pb);
+    release(p);
+    CHECK(vkd3d_proxy_live_count() == 0, "leak");
+}
+
+static void test_fixup_wiring() {
+    std::printf("[fixup: the wiring, and what STRICT still reports]\n");
+
+    /* Every (interface, slot) the generator claims for a fixup must really
+     * hold the fixup symbol in BOTH the PE-facing target table and the SysV
+     * vtable, or an inherited slot is quietly still generic. */
+    unsigned bad_target = 0, bad_sysv = 0, bad_flags = 0, noisy = 0, bad_slot = 0;
+    for (uint32_t i = 0; i < kVkdFixupSlotCount; i++) {
+        const VkdFixupSlot& e = kVkdFixupSlots[i];
+        const void* const* tgt = vkd3d_thunk_vtable(e.iface);
+        const void* const* sysv = vkd3d_thunk_vtable_for(e.iface, VKD3D_ABI_SYSV);
+        if (!tgt || tgt[e.slot] != kVkdFixupTargets[e.kind]) bad_target++;
+        if (!sysv || sysv[e.slot] != kVkdFixupTargets[e.kind]) bad_sysv++;
+        if (kVkdFixupSlot[e.kind] != e.slot) bad_slot++;
+        uint16_t f = kVkdSlotFlags[e.iface][e.slot];
+        if (!(f & VKD3D_SLOT_FIXUP) || !(f & VKD3D_SLOT_HAND) ||
+            !(f & VKD3D_SLOT_STRUCT_IFACE))
+            bad_flags++;
+        if (vkd3d_slot_untranslated(f)) noisy++;
+    }
+    NOTE("%u fixup (interface, slot) pairs across %u shapes",
+         kVkdFixupSlotCount, VKD3D_FIXUP_COUNT);
+    CHECK(bad_target == 0, "%u fixup slots are not wired into target[]", bad_target);
+    CHECK(bad_sysv == 0, "%u fixup slots are not wired into vtbl_sysv[]", bad_sysv);
+    CHECK(bad_slot == 0, "%u fixup slots disagree with kVkdFixupSlot[]", bad_slot);
+    CHECK(bad_flags == 0, "%u fixup slots carry the wrong flags", bad_flags);
+    CHECK(noisy == 0, "%u FIXED slots would still be reported by STRICT", noisy);
+
+    /* The negative control for that last one: the residue this package left
+     * behind must STILL be reported, or "quiet" would mean "blind". */
+    unsigned left_reported = 0, left_total = 0;
+    for (uint32_t i = 0; i < VKD3D_IFACE_COUNT; i++) {
+        for (uint32_t s = 0; s < kVkdSlotCount[i]; s++) {
+            uint16_t f = kVkdSlotFlags[i][s];
+            if ((f & VKD3D_SLOT_STRUCT_IFACE) && !(f & VKD3D_SLOT_FIXUP)) {
+                left_total++;
+                if (vkd3d_slot_untranslated(f)) left_reported++;
+            }
+        }
+    }
+    NOTE("struct-with-interface slots left unfixed: %u, of which STRICT "
+         "reports %u", left_total, left_reported);
+    CHECK(left_total == left_reported && left_total > 0,
+          "%u of %u unfixed struct slots went quiet", left_total - left_reported,
+          left_total);
+    CHECK(vkd3d_slot_untranslated(
+              kVkdSlotFlags[VKD3D_IFACE_ID3D12DEVICE5]
+                           [VKD3D_SLOT_ID3D12DEVICE5_CREATESTATEOBJECT]),
+          "CreateStateObject stopped being reported");
+    CHECK(!vkd3d_slot_untranslated(
+              kVkdSlotFlags[VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST]
+                           [VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER]),
+          "ResourceBarrier is fixed but STRICT still reports it");
+
+    /* A fixed slot must not go through vkd3d_thunk_struct_iface() any more:
+     * the generated worker that called it is not emitted at all for these. */
+    MockObject list, res;
+    mock_init(&list, VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, VT_LIST);
+    mock_init(&res, VKD3D_IFACE_ID3D12RESOURCE, VT_RESOURCE);
+    void* p = vkd3d_proxy_wrap(host_of(list), VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST);
+    void* pr = vkd3d_proxy_wrap(host_of(res), VKD3D_IFACE_ID3D12RESOURCE);
+    D3D12_RESOURCE_BARRIER b;
+    std::memset(&b, 0, sizeof(b));
+    b.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+    b.UAV.pResource = reinterpret_cast<ID3D12Resource*>(pr);
+    uint64_t warns = vkd3d_thunk_struct_iface_count();
+    typedef uint64_t (*Fn2)(void*, uint64_t, uint64_t);
+    reinterpret_cast<Fn2>(
+        vslot(p, VKD3D_SLOT_ID3D12GRAPHICSCOMMANDLIST_RESOURCEBARRIER))(
+            p, 1, reinterpret_cast<uint64_t>(&b));
+    CHECK(vkd3d_thunk_struct_iface_count() == warns,
+          "a FIXED slot still emitted a STRUCT-IFACE warning");
+    release(pr);
     release(p);
     CHECK(vkd3d_proxy_live_count() == 0, "leak");
 }
@@ -978,7 +1912,9 @@ static void test_flat_entries() {
     g_entry.hr = VKD3D_S_OK;
     void* device = nullptr;
     void* fake_adapter = reinterpret_cast<void*>(0x4321);
-    int32_t hr = D3D12CreateDevice(fake_adapter, 0xb000, iid_dev, &device);
+    int32_t hr = D3D12CreateDevice(
+        reinterpret_cast<IUnknown*>(fake_adapter),
+        static_cast<D3D_FEATURE_LEVEL>(0xb000), as_iid(iid_dev), &device);
     CHECK(hr == VKD3D_S_OK, "D3D12CreateDevice -> 0x%08x", unsigned(hr));
     CHECK(g_entry.entry == VKD3D_ENTRY_CREATE_DEVICE, "wrong entry id");
     CHECK(g_entry.a[0] == 0, "the adapter was not forced to NULL (0x%llx)",
@@ -997,7 +1933,8 @@ static void test_flat_entries() {
     std::memset(junk, 0x71, sizeof(junk));
     uint64_t before = g_crossings.load();
     void* nothing = reinterpret_cast<void*>(0x5);
-    hr = D3D12CreateDevice(nullptr, 0xb000, junk, &nothing);
+    hr = D3D12CreateDevice(nullptr, static_cast<D3D_FEATURE_LEVEL>(0xb000),
+                           as_iid(junk), &nothing);
     CHECK(hr == VKD3D_E_NOINTERFACE, "unknown IID gave 0x%08x", unsigned(hr));
     CHECK(nothing == nullptr, "unknown IID left the out-parameter non-null");
     CHECK(g_crossings.load() == before, "unknown IID crossed the boundary");
@@ -1008,8 +1945,11 @@ static void test_flat_entries() {
     g_entry.give_out2 = host_of(errblob);
     void* pblob = nullptr;
     void* perr  = nullptr;
-    hr = D3D12SerializeRootSignature(reinterpret_cast<const void*>(0x11), 1,
-                                     &pblob, &perr);
+    hr = D3D12SerializeRootSignature(
+        reinterpret_cast<const D3D12_ROOT_SIGNATURE_DESC*>(0x11),
+        static_cast<D3D_ROOT_SIGNATURE_VERSION>(1),
+        reinterpret_cast<ID3DBlob**>(&pblob),
+        reinterpret_cast<ID3DBlob**>(&perr));
     CHECK(hr == VKD3D_S_OK, "D3D12SerializeRootSignature -> 0x%08x", unsigned(hr));
     CHECK(g_entry.a[0] == 0x11 && g_entry.a[1] == 1, "the desc/version were mangled");
     CHECK(pblob && as_proxy(pblob)->iface == VKD3D_IFACE_ID3D10BLOB,
@@ -1272,10 +2212,10 @@ int main(int argc, char** argv) {
          * which must abort the process when STRICT is set and return normally
          * when it is not. */
         std::printf("[one STRUCT_IFACE call]\n");
-        MockObject list;
-        mock_init(&list, VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST, VT_LIST);
-        void* p = vkd3d_proxy_wrap(host_of(list), VKD3D_IFACE_ID3D12GRAPHICSCOMMANDLIST);
-        drive_struct_iface_slot(list, p);
+        MockObject dev;
+        mock_init(&dev, VKD3D_IFACE_ID3D12DEVICE5, VT_GENERIC);
+        void* p = vkd3d_proxy_wrap(host_of(dev), VKD3D_IFACE_ID3D12DEVICE5);
+        drive_struct_iface_slot(dev, p);
         release(p);
         std::printf("survived (VKD3D_THUNK_STRICT was not set)\n");
         return 0;
@@ -1289,6 +2229,13 @@ int main(int argc, char** argv) {
     test_marshalling();
     test_refused();
     test_struct_iface();
+    test_fixup_resource_barrier();
+    test_fixup_copy_texture_region();
+    test_fixup_pipeline_desc();
+    test_fixup_pipeline_stream();
+    test_fixup_begin_render_pass();
+    test_fixup_barrier();
+    test_fixup_wiring();
     test_flat_entries();
     test_interop_exports();
     test_threaded();
