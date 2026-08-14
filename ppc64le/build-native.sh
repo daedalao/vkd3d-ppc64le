@@ -31,8 +31,14 @@ cat > "$machine_file" <<EOF
 widl = '$WIDL'
 
 [built-in options]
-c_args = ['-mcpu=$MCPU']
-cpp_args = ['-mcpu=$MCPU']
+# -fno-strict-aliasing: COM-in-C reads typed object pointers through
+# IUnknown** constantly (vkd3d code and its test suite both). gcc 16.1.1 at
+# -O3 on ppc64le exploits the aliasing UB in
+# test_destruction_notifier_interfaces into a stack-slot-sharing miscompile
+# (A/B/A-verified: stock crashes, this flag fixes, stock crashes again).
+# Wine builds with the same flag for the same reason.
+c_args = ['-mcpu=$MCPU', '-fno-strict-aliasing']
+cpp_args = ['-mcpu=$MCPU', '-fno-strict-aliasing']
 EOF
 
 echo "target: -mcpu=$MCPU  jobs: $JOBS  build: $BUILD_DIR  widl: $WIDL"
